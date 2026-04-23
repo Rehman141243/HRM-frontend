@@ -24,6 +24,17 @@ import {
    
   } from "lucide-react"
 import { ErrorBanner, Spinner, StatusBadge, SuccessBanner } from "../admin-shift";
+
+function toHHmm(value) {
+  const match = String(value || "").match(/(\d{1,2}):(\d{2})/)
+  if (match) return `${match[1].padStart(2, "0")}:${match[2]}`
+
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ""
+
+  return `${String(parsed.getHours()).padStart(2, "0")}:${String(parsed.getMinutes()).padStart(2, "0")}`
+}
+
 export default function ShiftsManagementTab() {
   const [shifts, setShifts] =useState([])
   const [loading, setLoading] =useState(true)
@@ -92,26 +103,31 @@ export default function ShiftsManagementTab() {
       setError("Please fill all required fields")
       return
     }
+
+    const [startTime, endTime] = [formData.start_time, formData.end_time].map((t) => toHHmm(t).slice(0, 5))
+
+    if (!startTime || !endTime) {
+      setError("Time must be in HH:mm format (24-hour)")
+      return
+    }
+
+    const payload = {
+      name: formData.name,
+      start_time: startTime,
+      end_time: endTime,
+      duration_hours: parseFloat(formData.duration_hours),
+    }
+
     setSubmitting(true)
     setError("")
     try {
       if (editingShift) {
-        await axiosInstance.put(`/attendance/shifts/${editingShift.id}`, {
-          name: formData.name,
-          start_time: formData.start_time,
-          end_time: formData.end_time,
-          duration_hours: parseFloat(formData.duration_hours),
-        })
-        setSuccess("Shift updated successfully")
+        await axiosInstance.put(`/attendance/shifts/${editingShift.id}`, payload)
       } else {
-        await axiosInstance.post("/attendance/shifts", {
-          name: formData.name,
-          start_time: formData.start_time,
-          end_time: formData.end_time,
-          duration_hours: parseFloat(formData.duration_hours),
-        })
-        setSuccess("Shift created successfully")
+        await axiosInstance.post("/attendance/shifts", payload)
       }
+
+      setSuccess(editingShift ? "Shift updated successfully" : "Shift created successfully")
       setDialogOpen(false)
       resetForm()
       loadShifts()
@@ -170,8 +186,8 @@ export default function ShiftsManagementTab() {
     setEditingShift(shift)
     setFormData({
       name: shift.name,
-      start_time: shift.start_time,
-      end_time: shift.end_time,
+      start_time: toHHmm(shift.start_time),
+      end_time: toHHmm(shift.end_time),
       duration_hours: shift.duration_hours.toString(),
       description: shift.description || "",
     })
