@@ -46,7 +46,7 @@ function StatusPill({ value }) {
 
 function DottedCard({ title, subtitle, rightSlot, children }) {
   return (
-    <Card className="rounded-2xl border border-dashed border-border/70 bg-card/70 shadow-xs">
+    <Card className="h-full rounded-2xl border border-dashed border-border/70 bg-card/70 shadow-xs">
       <CardHeader className="pb-2 pt-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -65,7 +65,7 @@ function DottedCard({ title, subtitle, rightSlot, children }) {
 
 function SolidCard({ title, rightSlot, children, className }) {
   return (
-    <Card className={`rounded-2xl border border-border/60 bg-card shadow-xs ${className || ""}`}>
+    <Card className={`h-full rounded-2xl border border-border/60 bg-card shadow-xs ${className || ""}`}>
       <CardHeader className="pb-2 pt-5">
         <div className="flex items-start justify-between gap-3">
           <CardTitle className="text-base">{title}</CardTitle>
@@ -141,7 +141,7 @@ export default function AdminDashboardContainer() {
         ))} */}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch gap-4">
         <div className="lg:col-span-3">
           <DottedCard
             title="Team Payments"
