@@ -97,6 +97,11 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (typeof window !== "undefined") {
+      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+      window.dispatchEvent(new CustomEvent("app:error", { detail: { message } }));
+    }
+
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");

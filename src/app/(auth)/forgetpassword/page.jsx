@@ -66,7 +66,7 @@
 
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -81,6 +81,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { forgotPassword } from "@/lib/auth";
+import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -89,6 +90,14 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (success) toast.success(success);
+  }, [success]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,17 +133,6 @@ export default function ForgotPasswordPage() {
         <CardContent>
           <form id="forgot-form" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              {error && (
-                <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                  {error}
-                </p>
-              )}
-              {success && (
-                <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-md px-3 py-2">
-                  {success}
-                </p>
-              )}
-
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input

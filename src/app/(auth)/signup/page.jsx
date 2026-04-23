@@ -76,7 +76,7 @@
 
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -91,6 +91,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { adminCreateUser } from "@/lib/auth";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -104,6 +105,14 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (success) toast.success(success);
+  }, [success]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -156,17 +165,6 @@ export default function SignupPage() {
         <CardContent>
           <form id="signup-form" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              {error && (
-                <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-                  {error}
-                </p>
-              )}
-              {success && (
-                <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-md px-3 py-2">
-                  {success}
-                </p>
-              )}
-
               <div className="grid gap-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input
