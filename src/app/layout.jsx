@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Geist, Archivo, Inter, Poppins } from "next/font/google";
 import ThemeInit from "@/components/common/theme-init";
+import { Toaster } from "@/components/ui/sonner";
+import GlobalToastListener from "@/components/common/global-toast-listener";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -29,7 +31,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${Achivo.variable}`}>
       <body className="min-h-screen flex flex-col  font-sans">
         <ThemeInit />
+        <GlobalToastListener />
         {children}
+        <Toaster richColors closeButton position="top-right" />
       </body>
     </html>
   );

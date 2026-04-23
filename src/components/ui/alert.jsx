@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cva } from "class-variance-authority";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils"
 
@@ -22,14 +25,45 @@ const alertVariants = cva(
 function Alert({
   className,
   variant,
+  children,
   ...props
 }) {
+  const lastToastKeyRef = React.useRef("");
+  const isSuccessInline = typeof className === "string" && /(emerald|success)/i.test(className);
+
+  React.useEffect(() => {
+    const extractText = (node) => {
+      if (typeof node === "string" || typeof node === "number") return String(node);
+      if (!node || !node.props) return "";
+      const child = node.props.children;
+      if (Array.isArray(child)) return child.map(extractText).join(" ").trim();
+      return extractText(child);
+    };
+
+    const message = extractText(children).replace(/\s+/g, " ").trim();
+    if (!message) return;
+
+    const kind = variant === "destructive" ? "error" : isSuccessInline ? "success" : "none";
+    if (kind === "none") return;
+
+    const toastKey = `${kind}:${message}`;
+    if (lastToastKeyRef.current === toastKey) return;
+    lastToastKeyRef.current = toastKey;
+
+    if (kind === "error") toast.error(message);
+    if (kind === "success") toast.success(message);
+  }, [children, variant, isSuccessInline]);
+
+  if (variant === "destructive" || isSuccessInline) return null;
+
   return (
     <div
       data-slot="alert"
       role="alert"
       className={cn(alertVariants({ variant }), className)}
-      {...props} />
+      {...props}>
+      {children}
+    </div>
   );
 }
 

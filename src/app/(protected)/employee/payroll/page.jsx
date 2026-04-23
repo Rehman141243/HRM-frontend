@@ -999,6 +999,10 @@ export default function PayrollService() {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
   // ── All Payrolls state (admin/hr/manager) ──────────────────────────────────
   const [allPayrolls, setAllPayrolls] = useState([]);
   const [allPage, setAllPage] = useState(1);
@@ -1261,13 +1265,6 @@ export default function PayrollService() {
 
       {/* Body */}
       <div className="max-w-screen-xl mx-auto px-6 py-5">
-        {error && (
-          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
-            <span>{error}</span>
-            <button onClick={() => setError("")} className="ml-3 text-red-400 hover:text-red-600"><X className="w-4 h-4" /></button>
-          </div>
-        )}
-
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList className="mb-5 h-9">
             {perms.canViewAllPayrolls && (
