@@ -1,6 +1,6 @@
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component"
-import ShiftRequestsTab from "../../../../containers/hr/ShiftRequestsTab";
+import ShiftRequestsTab from "../../../../containers/employee/ShiftRequestsTab";
 
 
 export default function Page() {

@@ -123,10 +123,10 @@ export default function AdminShiftManagement() {
       </div>
 
       <Tabs defaultValue="assignments" className="w-full">
-        <TabsList className="grid w-full max-w-lg grid-cols-3">
+        <TabsList className="grid w-full max-w-lg grid-cols-2">
           <TabsTrigger value="assignments">Assignments</TabsTrigger>
           <TabsTrigger value="shifts">Shifts</TabsTrigger>
-          <TabsTrigger value="requests">Requests</TabsTrigger>
+          {/* <TabsTrigger value="requests">Requests</TabsTrigger> */}
         
         </TabsList>
         <TabsContent value="shifts" className="mt-4">

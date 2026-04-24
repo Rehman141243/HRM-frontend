@@ -1,5 +1,5 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import OvertimeTab from "../../../../containers/trash/components/OvertimeTab";
+import OvertimeTab from "../../../../containers/employee/OvertimeTab";
 
 export default function Page() {
   const breadcrumbData = [
