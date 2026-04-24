@@ -42,6 +42,10 @@ export default function PayrollService() {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
   // Employees
   const [employees, setEmployees] = useState([]);
   const [empLoading, setEmpLoading] = useState(false);
@@ -246,13 +250,6 @@ export default function PayrollService() {
           )}
         </div>
       </div>
-
-      {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center justify-between">
-          <span>{error}</span>
-          <button onClick={() => setError("")}><X className="w-4 h-4" /></button>
-        </div>
-      )}
 
       <Tabs value={activeTab} onValueChange={(t) => { setActiveTab(t); setError(""); }}>
         <TabsList className="mb-2 h-9">

@@ -174,13 +174,6 @@ export default function AttendanceTab() {
   
     return (
       <div className="space-y-4">
-        {error && (
-          <Alert variant="destructive">
-            <XCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
         {success && (
           <Alert className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 className="h-4 w-4" />

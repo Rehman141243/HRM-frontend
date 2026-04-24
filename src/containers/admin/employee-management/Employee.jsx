@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axiosInstance"
 import DeleteEmployeeDialog from "./DeleteEmployeeDialog";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 function buildColumns(onDelete, canDelete, onEdit, onView) {
   return [
@@ -132,6 +133,10 @@ export default function EmployeeContainer() {
   const [deleteTarget, setDeleteTarget] = useState(null) // full employee object
   const [isDeleting, setIsDeleting] = useState(false)
 
+  useEffect(() => {
+    if (error) toast.error(error)
+  }, [error])
+
   const handleEdit = (id) => router.push(`/admin/employee-management/update-employee/${id}`)
   const handleView = (id) => router.push(`/admin/employee-management/${id}`)
 
@@ -249,13 +254,6 @@ export default function EmployeeContainer() {
           )}
         </div>
       </div>
-
-      {/* ── Error banner ───────────────────────────────────── */}
-      {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
-        </div>
-      )}
 
       <Card className="border-border/60 shadow-sm">
         <CardHeader className="pb-2">

@@ -24,6 +24,25 @@ import {
    
   } from "lucide-react"
 import { ErrorBanner, Spinner, StatusBadge, SuccessBanner } from "../admin-shift";
+
+function toHHmm(value) {
+  if (!value) return "";
+
+  const directMatch = String(value).match(/(\d{2}):(\d{2})/);
+  if (directMatch) {
+    return `${directMatch[1]}:${directMatch[2]}`;
+  }
+
+  const parsed = new Date(value);
+  if (!Number.isNaN(parsed.getTime())) {
+    const h = String(parsed.getHours()).padStart(2, "0");
+    const m = String(parsed.getMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
+  }
+
+  return "";
+}
+
 export default function ShiftsManagementTab() {
   const [shifts, setShifts] =useState([])
   const [loading, setLoading] =useState(true)
@@ -92,22 +111,31 @@ export default function ShiftsManagementTab() {
       setError("Please fill all required fields")
       return
     }
+
+    const startTime = toHHmm(formData.start_time)
+    const endTime = toHHmm(formData.end_time)
+
+    if (!startTime || !endTime) {
+      setError("Time must be in HH:mm format (24-hour)")
+      return
+    }
+
     setSubmitting(true)
     setError("")
     try {
       if (editingShift) {
         await axiosInstance.put(`/attendance/shifts/${editingShift.id}`, {
           name: formData.name,
-          start_time: formData.start_time,
-          end_time: formData.end_time,
+          start_time: startTime,
+          end_time: endTime,
           duration_hours: parseFloat(formData.duration_hours),
         })
         setSuccess("Shift updated successfully")
       } else {
         await axiosInstance.post("/attendance/shifts", {
           name: formData.name,
-          start_time: formData.start_time,
-          end_time: formData.end_time,
+          start_time: startTime,
+          end_time: endTime,
           duration_hours: parseFloat(formData.duration_hours),
         })
         setSuccess("Shift created successfully")
@@ -170,8 +198,8 @@ export default function ShiftsManagementTab() {
     setEditingShift(shift)
     setFormData({
       name: shift.name,
-      start_time: shift.start_time,
-      end_time: shift.end_time,
+      start_time: toHHmm(shift.start_time),
+      end_time: toHHmm(shift.end_time),
       duration_hours: shift.duration_hours.toString(),
       description: shift.description || "",
     })

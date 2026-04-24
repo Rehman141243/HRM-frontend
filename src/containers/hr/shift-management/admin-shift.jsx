@@ -18,6 +18,7 @@ import ShiftsManagementTab from "./components/shiftmangementtab"
 import ShiftRequestsTab from "./components/shiftrequesttab"
 import React, { useEffect, useState } from "react"
 import AdminLeaveManagement from "./admin-leave/adminleave"
+import { toast } from "sonner"
 
 
 export function Spinner({ size = 4 }) {
@@ -26,34 +27,22 @@ export function Spinner({ size = 4 }) {
 
 
 export function ErrorBanner({ message, onDismiss }) {
-  if (!message) return null
-  return (
-    <div className="rounded-md border border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-900 px-4 py-3 text-sm text-red-600 dark:text-red-400 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <XCircle className="h-4 w-4 shrink-0" />
-        {message}
-      </div>
-      <button onClick={onDismiss} className="ml-auto shrink-0 text-red-400 hover:text-red-600">
-        ×
-      </button>
-    </div>
-  )
+  useEffect(() => {
+    if (!message) return
+    toast.error(message)
+    onDismiss?.()
+  }, [message, onDismiss])
+  return null
 }
 
 // ─── Success Banner ──────────────────────────────────────────────────────────
 export function SuccessBanner({ message, onDismiss }) {
-  if (!message) return null
-  return (
-    <div className="rounded-md border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-900 px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <CheckCircle2 className="h-4 w-4 shrink-0" />
-        {message}
-      </div>
-      <button onClick={onDismiss} className="ml-auto shrink-0 text-emerald-400 hover:text-emerald-600">
-        ×
-      </button>
-    </div>
-  )
+  useEffect(() => {
+    if (!message) return
+    toast.success(message)
+    onDismiss?.()
+  }, [message, onDismiss])
+  return null
 }
 
 // ─── Status Badge ────────────────────────────────────────────────────────────
