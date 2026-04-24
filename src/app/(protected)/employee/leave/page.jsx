@@ -1,6 +1,6 @@
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import LeaveTab from "../../../../containers/employee/leavetab";
+import Leave from "../../../../containers/employee/leave/leave";
 
 export default function Page() {
   const breadcrumbData = [
@@ -10,7 +10,7 @@ export default function Page() {
     return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <LeaveTab />
+      <Leave />
     </>
   )
 }

@@ -1,17 +1,16 @@
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component"
-import ShiftRequestsTab from "../../../../containers/employee/ShiftRequestsTab";
-
+import Shift from "../../../../containers/employee/shift/shift";
 
 export default function Page() {
   const breadcrumbData = [
-    { name: "Shift Request", url: "/employee/shift-request" },
+    { name: "My Shifts", url: "/employee/shift" },
   ]
   
     return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <ShiftRequestsTab />
+      <Shift />
     </>
   )
 }
