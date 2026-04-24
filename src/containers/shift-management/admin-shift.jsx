@@ -91,7 +91,7 @@ export default function AdminShiftManagement() {
       if (designation === "hr" || designation === "manager") return
 
       // employee or others → block
-      router.push("/dashboard")
+      router.push("/")
     }
   }, [router])
 

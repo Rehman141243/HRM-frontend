@@ -24,36 +24,56 @@ import { useEffect, useState } from "react"
 
 
 export function AppSidebar() {
-  const router = useRouter()
   const [user, setUser] = useState(null)
-
+  const [loading, setLoading] = useState(true)
+  const router=useRouter();
+  const getDefaultRoute = () => {
+    if (role === "admin") return "/admin/employee-management"
+  
+    if (designation === "employee") return "/employee/attendance"
+  
+    if (designation === "hr") return "/hr"
+  
+    if (designation === "manager") return "/manager"
+  
+    return "/login"
+  }
   useEffect(() => {
     const u = getUser()
     console.log("USER DATA:", u)
     setUser(u)
+    setLoading(false)
   }, [])
-  useEffect(() => {
-    if (!user)   router.push('/login');
   
-    const path = window.location.pathname;
+  useEffect(() => {
+    if (loading) return
+  
+    if (!user) {
+      router.push('/login')
+      return
+    }
+  
+    const path = window.location.pathname
   
     if (!canAccess(path)) {
-      router.push("/dashboard", { replace: true });
+      router.push(getDefaultRoute())
     }
-  }, [user]);
+  
+  }, [user, loading])
 
 
 
   const allNavItems = [
-    { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    //{ title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     // { title: "Employees", href: "/admin/employee-management", icon: Users },
+     { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { title: "Shift Management", href: "/admin/shift-management", icon: Calendar },
     { title: "Employees Management", href: "/admin/employee-management", icon: Users, },
     { title: "Leave Approval", href: "/admin/leaveapproveltab", icon: ClipboardCheck, },
-    { title: "Change Shift", href: "/admin/change-shift", icon: Repeat,  },
+    //{ title: "Change Shift", href: "/admin/change-shift", icon: Repeat,  },
     { title: "Overtime Request", href: "/admin/overtime", icon: Timer,  },
     { title: "Payroll", href: "/admin/payroll", icon: Wallet },
-    { title: "Employees Attendance", href: "/admin/hrattendancedailytab", icon: UserCheck },
+    { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck },
 
   
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
@@ -65,9 +85,9 @@ export function AppSidebar() {
     { title: "My Attendance", href: "/hr", icon: Clock, hr: true },
     { title: "Employees Management", href: "/hr/employee-management", icon: Users,hr: true  },
     { title: "Leave Approval", href: "/hr/leaveapproveltab", icon: ClipboardCheck, hr: true },
-    { title: "Change Shift", href: "/hr/change-shift", icon: Repeat, hr: true },
+   // { title: "Change Shift", href: "/hr/change-shift", icon: Repeat, hr: true },
     { title: "Overtime Request", href: "/hr/overtime", icon: Timer, hr: true },
-    { title: "Employees Attendance", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
+    { title: "Attendance Reports", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
     { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut },
     { title: "payroll", href: "/hr/payroll", icon: Wallet },
@@ -123,7 +143,8 @@ export function AppSidebar() {
     // 🔴 ADMIN → explicit allowed list (BEST PRACTICE)
     if (role === "admin") {
       const adminAllowed = [
-        "/dashboard",
+        // "/dashboard",
+        "/admin/dashboard",
         "/admin/employee-management",
         "/admin/shift-management",
   

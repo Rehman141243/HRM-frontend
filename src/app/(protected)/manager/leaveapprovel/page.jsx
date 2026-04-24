@@ -1,5 +1,5 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import ManagerLeaveApprovalTab from "../../../../containers/attendance/components/ManagerLeaveApprovalTab";
+import ManagerLeaveApprovalTab from "../../../../containers/manager/ManagerLeaveApprovalTab";
 
 
 

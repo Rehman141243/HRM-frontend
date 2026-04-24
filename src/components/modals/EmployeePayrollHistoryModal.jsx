@@ -66,9 +66,9 @@ export default function EmployeePayrollHistoryModal({ employee, open, onClose, p
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-100">
+                  <tr className="bg-gray-50 border-b border-gray-100 dark:bg-gray-800">
                     {["Period", "Working Days", "Payable Days", "Gross Salary", "Deductions", "Net Salary", "Status", ""].map((h) => (
-                      <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">{h}</th>
+                      <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest dark:text-white text-gray-400 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -76,13 +76,13 @@ export default function EmployeePayrollHistoryModal({ employee, open, onClose, p
                   {payrolls.map((p, i) => {
                     const n = normalizePayroll(p);
                     return (
-                      <tr key={n.id || i} className="hover:bg-gray-50 cursor-pointer transition-colors" onClick={() => onSelectPayroll(n)}>
-                        <td className="px-4 py-3 font-semibold text-gray-900 whitespace-nowrap">{MONTH_SHORT[(n.period.month || 1) - 1]} {n.period.year}</td>
-                        <td className="px-4 py-3 text-center tabular-nums text-gray-500">{fmtNum(n.period.working_days)}</td>
+                      <tr key={n.id || i} className="hover:bg-gray-50 dark:hover:bg-gray-700/10 cursor-pointer transition-colors" onClick={() => onSelectPayroll(n)}>
+                        <td className="px-4 py-3 font-semibold text-gray-900 dark:text-white whitespace-nowrap">{MONTH_SHORT[(n.period.month || 1) - 1]} {n.period.year}</td>
+                        <td className="px-4 py-3 text-center tabular-nums text-gray-500 dark:text-white">{fmtNum(n.period.working_days)}</td>
                         <td className="px-4 py-3 text-center tabular-nums font-bold text-blue-600">{fmtNum(n.attendance.payable_days)}</td>
-                        <td className="px-4 py-3 font-mono tabular-nums text-gray-600">{fmtPKR(n.totals.gross_salary)}</td>
-                        <td className="px-4 py-3 font-mono tabular-nums text-red-600">−{fmtPKR(n.totals.deductions_total)}</td>
-                        <td className="px-4 py-3 font-mono tabular-nums font-bold text-gray-900">{fmtPKR(n.totals.net_salary)}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums text-xs text-gray-600 dark:text-white">{fmtPKR(n.totals.gross_salary)}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums text-xs text-red-600">−{fmtPKR(n.totals.deductions_total)}</td>
+                        <td className="px-4 py-3 font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white">{fmtPKR(n.totals.net_salary)}</td>
                         <td className="px-4 py-3"><StatusBadge status={n.status} /></td>
                         <td className="px-4 py-3">
                           <button onClick={(e) => { e.stopPropagation(); onSelectPayroll(n); }}

@@ -1,5 +1,5 @@
-import { AlertCircle, Banknote, CheckCircle, Clock ,Plus,X} from "lucide-react";
-import { useEffect } from "react";
+import { AlertCircle, Banknote, CheckCircle, Clock ,Plus,Search,X} from "lucide-react";
+import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { cn } from "@/lib/utils";
 // ─── Role/Permission Helpers ──────────────────────────────────────────────────
@@ -28,7 +28,7 @@ export const getPermissions = (user) => {
       roleLabel: isAdmin ? "Administrator" : isHr ? "HR Manager" : "Employee",
     };
   };
-  
+
   // ─── Format Helpers ───────────────────────────────────────────────────────────
   export const fmt = (n) => new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n || 0);
   export const fmtPKR = (n) => `PKR ${fmt(n)}`;
@@ -108,6 +108,10 @@ export const getPermissions = (user) => {
       ...s,
       allowance_total: s.allowance_total ?? (s.allowances || []).reduce((sum, a) => sum + Number(a.amount ?? a.value ?? 0), 0),
       deduction_total: s.deduction_total ?? (s.deductions || []).reduce((sum, d) => sum + Number(d.amount ?? d.value ?? 0), 0),
+      attendance_policy: s.attendance_policy ?? (s.attendance_policy_id ? { name: s.attendance_policy_name ?? null } : null),
+      overtime_policy:   s.overtime_policy   ?? (s.overtime_policy_id   ? { name: s.overtime_policy_name   ?? null } : null),
+      tax_policy:        s.tax_policy        ?? (s.tax_policy_id        ? { name: s.tax_policy_name        ?? null } : null),
+      bonus_policy:      s.bonus_policy      ?? (s.bonus_policy_id      ? { name: s.bonus_policy_name      ?? null } : null),
     };
   };
   
@@ -193,7 +197,7 @@ export const getPermissions = (user) => {
             </div>
           )}
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap mt-2">
               <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{title}</h2>
               {badge}
             </div>

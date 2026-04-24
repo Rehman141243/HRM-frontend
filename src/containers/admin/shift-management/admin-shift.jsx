@@ -91,7 +91,7 @@ export default function AdminShiftManagement() {
       if (designation === "hr" || designation === "manager") return
 
       // employee or others → block
-      router.push("/dashboard")
+      router.push("/")
     }
   }, [router])
 
@@ -140,15 +140,15 @@ export default function AdminShiftManagement() {
           <TabsTrigger value="requests">Requests</TabsTrigger>
         
         </TabsList>
-        <TabsContent value="assignments" className="mt-4">
-          <EmployeeAssignmentsTab />
-        </TabsContent>
         <TabsContent value="shifts" className="mt-4">
           <ShiftsManagementTab />
         </TabsContent>
-        <TabsContent value="requests" className="mt-4">
-          <ShiftRequestsTab />
+        <TabsContent value="assignments" className="mt-4">
+          <EmployeeAssignmentsTab />
         </TabsContent>
+        {/* <TabsContent value="requests" className="mt-4">
+          <ShiftRequestsTab />
+        </TabsContent> */}
       </Tabs>
     </div>
   )

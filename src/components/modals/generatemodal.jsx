@@ -58,9 +58,9 @@ export default function GenerateModal({ open, onClose, onGenerate, loading, pref
             </div>
   
             <div className="flex justify-end gap-2 pt-1">
-              <button onClick={onClose} className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
+              <button onClick={onClose} className="px-3 py-1.5 rounded-lg border border-gray-200  text-xs font-semibold  dark:text-white dark:hover:bg-gray-700 text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
               <button onClick={handleSubmit} disabled={loading}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gray-900 hover:bg-gray-700 text-white text-xs font-semibold transition-colors disabled:opacity-50">
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gray-900 dark:bg-gray-600 hover:bg-gray-400 text-white text-xs font-semibold transition-colors dark:disabled:opacity-50">
                 {loading ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" />Generating…</> : <><TrendingUp className="w-3.5 h-3.5" />Generate</>}
               </button>
             </div>

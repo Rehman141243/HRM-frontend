@@ -208,7 +208,7 @@ export default function EmployeeAssignmentsTab() {
                         <th className="py-3 text-left font-medium">Valid From</th>
                         <th className="py-3 text-left font-medium">Valid To</th>
                         <th className="py-3 text-left font-medium">Status</th>
-                        <th className="py-3 text-right font-medium">Actions</th>
+                        {/* <th className="py-3 text-right font-medium">Actions</th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -223,7 +223,7 @@ export default function EmployeeAssignmentsTab() {
                           <td className="py-3">{assign.assigned_from || "Start"}</td>
                           <td className="py-3">{assign.assigned_to || "Ongoing"}</td>
                           <td className="py-3"><StatusBadge status={assign.is_active ? "active" : "inactive"} /></td>
-                          <td className="py-3 text-right">
+                          <td className="py-3 ">
                             <Button
                               variant="ghost"
                               size="sm"

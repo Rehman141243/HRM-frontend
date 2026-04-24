@@ -120,7 +120,7 @@ export default function PolicyCard({ policy, type, onEdit, onDelete, canManage }
             <span className={cn("inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border", cfg.badge)}>
               {cfg.icon}{type}
             </span>
-            <span className="text-xs font-mono text-gray-300 dark:text-gray-600">{policy.id?.slice(0, 8)}…</span>
+            {/* <span className="text-xs font-mono text-gray-300 dark:text-gray-600">{policy.id?.slice(0, 8)}…</span> */}
           </div>
           <p className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate">{policy.name || "Unnamed Policy"}</p>
         </div>

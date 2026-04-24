@@ -329,11 +329,11 @@ export default function PayrollService() {
                                 <Button size="sm" variant="ghost" className="h-8 px-2 text-xs gap-1" onClick={() => setSelectedEmployee(emp)}>
                                   <EyeIcon className="h-3.5 w-3.5" /><span className="hidden sm:inline">History</span>
                                 </Button>
-                                {perms.canGeneratePayroll && (
+                                {/* {perms.canGeneratePayroll && (
                                   <Button size="sm" variant="ghost" className="h-8 px-2 text-xs gap-1 text-primary hover:text-primary" onClick={() => setGenerateEmployee(emp)}>
                                     <PlayCircle className="h-3.5 w-3.5" /><span className="hidden sm:inline">Generate</span>
                                   </Button>
-                                )}
+                                )} */}
                               </div>
                             </TableCell>
                           </TableRow>
