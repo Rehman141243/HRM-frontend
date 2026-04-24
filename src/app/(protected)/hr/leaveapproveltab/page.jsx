@@ -1,5 +1,5 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import HRLeaveApprovalTab from "../../../../containers/hr/hrleaveapproveltab";
+import ManagerLeaveApprovalTab from "../../../../containers/hr/hrleaveapproveltab";
 
 
 export default function Page() {
@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <HRLeaveApprovalTab />
+      <ManagerLeaveApprovalTab />
     </>
   )
 }

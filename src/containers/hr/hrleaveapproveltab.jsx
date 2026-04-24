@@ -1,18 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import axiosInstance from "@/lib/axiosInstance";
+import { getUser } from "@/lib/auth";
 
-// ─── shadcn/ui imports ─────────────────────────────────────────────────────
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -20,20 +19,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -42,71 +31,332 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Alert,
-  AlertDescription,
-
-} from "@/components/ui/alert";
-
-
-import {
-
   CheckCircle2,
-
   RefreshCw,
- 
   AlertCircle,
-
   ThumbsUp,
   ThumbsDown,
-
+  Building2,
+  History,
+  Clock,
 } from "lucide-react";
 
-import { fmtDate,  StatusBadge,} from "@/components/common/common";
+import { fmtDate, StatusBadge } from "@/components/common/common";
+import { DataTablePagination } from "@/components/common/data-table-pagination";
 
+// ─── Pending columns ──────────────────────────────────────────────────────────
+function usePendingColumns({ actionId, onApprove, onRejectOpen }) {
+  return useMemo(
+    () => [
+      {
+        accessorKey: "employee",
+        header: "Employee",
+        cell: ({ row }) => {
+          const emp = row.original.employee;
+          return emp ? (
+            <div>
+              <p className="text-sm font-medium">{`${emp.first_name} ${emp.last_name}`}</p>
+              {emp.department && (
+                <p className="text-xs text-muted-foreground">{emp.department}</p>
+              )}
+            </div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          );
+        },
+      },
+      {
+        accessorKey: "leave_type",
+        header: "Type",
+        cell: ({ getValue }) => (
+          <span className="text-xs">{getValue()?.replace(/_/g, " ")}</span>
+        ),
+      },
+      {
+        accessorKey: "start_date",
+        header: "From",
+        cell: ({ getValue }) => (
+          <span className="text-xs text-muted-foreground">{fmtDate(getValue())}</span>
+        ),
+      },
+      {
+        accessorKey: "end_date",
+        header: "To",
+        cell: ({ getValue }) => (
+          <span className="text-xs text-muted-foreground">{fmtDate(getValue())}</span>
+        ),
+      },
+      {
+        accessorKey: "total_days",
+        header: "Days",
+        cell: ({ getValue }) => (
+          <span className="text-xs tabular-nums">{getValue() ?? "—"}</span>
+        ),
+      },
+      {
+        accessorKey: "manager_status",
+        header: "Mgr Status",
+        cell: ({ getValue }) => <StatusBadge status={getValue()} />,
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          const l = row.original;
+          return (
+            <div className="flex gap-1.5">
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs gap-1 border-emerald-500/40 text-emerald-700 hover:bg-emerald-500/10"
+                disabled={actionId === l.id}
+                onClick={() => onApprove(l.id)}
+              >
+                {actionId === l.id ? (
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                ) : (
+                  <ThumbsUp className="h-3 w-3" />
+                )}
+                Approve
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs gap-1 border-red-500/40 text-red-600 hover:bg-red-500/10"
+                onClick={() => onRejectOpen(l.id)}
+              >
+                <ThumbsDown className="h-3 w-3" />
+                Reject
+              </Button>
+            </div>
+          );
+        },
+      },
+    ],
+    [actionId, onApprove, onRejectOpen]
+  );
+}
 
+// ─── History columns ──────────────────────────────────────────────────────────
+const historyColumns = [
+  {
+    accessorKey: "employee",
+    header: "Employee",
+    cell: ({ row }) => {
+      const emp = row.original.employee;
+      return emp ? (
+        <div>
+          <p className="text-sm font-medium">{`${emp.first_name} ${emp.last_name}`}</p>
+          {emp.department && (
+            <p className="text-xs text-muted-foreground">{emp.department}</p>
+          )}
+        </div>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      );
+    },
+  },
+  {
+    accessorKey: "leave_type",
+    header: "Type",
+    cell: ({ getValue }) => (
+      <span className="text-xs">{getValue()?.replace(/_/g, " ")}</span>
+    ),
+  },
+  {
+    accessorKey: "start_date",
+    header: "From",
+    cell: ({ getValue }) => (
+      <span className="text-xs text-muted-foreground">{fmtDate(getValue())}</span>
+    ),
+  },
+  {
+    accessorKey: "end_date",
+    header: "To",
+    cell: ({ getValue }) => (
+      <span className="text-xs text-muted-foreground">{fmtDate(getValue())}</span>
+    ),
+  },
+  {
+    accessorKey: "total_days",
+    header: "Days",
+    cell: ({ getValue }) => (
+      <span className="text-xs tabular-nums">{getValue() ?? "—"}</span>
+    ),
+  },
+  {
+    accessorKey: "manager_status",
+    header: "Mgr Decision",
+    cell: ({ getValue }) => <StatusBadge status={getValue()} />,
+  },
+  {
+    accessorKey: "hr_status",
+    header: "HR Decision",
+    cell: ({ getValue }) => <StatusBadge status={getValue()} />,
+  },
+  {
+    accessorKey: "status",
+    header: "Final Status",
+    cell: ({ getValue }) => <StatusBadge status={getValue()} />,
+  },
+];
 
+// ─── Reusable DataTable shell ─────────────────────────────────────────────────
+function LeaveDataTable({ table, columns, loading, emptyMessage }) {
+  return (
+    <Card>
+      <CardContent className="p-0">
+        {loading ? (
+          <div className="p-4 space-y-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-14 w-full" />
+            ))}
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((hg) => (
+                <TableRow key={hg.id}>
+                  {hg.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="text-center text-muted-foreground py-8 text-sm"
+                  >
+                    {emptyMessage}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
-
-
-
-
+// ─── Main component ────────────────────────────────────────────────────────────
 export default function HRLeaveApprovalTab() {
-  const [leaves, setLeaves] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const user = getUser();
+  if (user?.designation !== "hr") return null;
+
+  // Pending state
+  const [pending, setPending] = useState([]);
+  const [pendingLoading, setPendingLoading] = useState(true);
+  const [pendingPage, setPendingPage] = useState(1);
+  const [pendingPagination, setPendingPagination] = useState({});
+
+  // History state
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyPagination, setHistoryPagination] = useState({});
+  const [historyLoaded, setHistoryLoaded] = useState(false);
+
+  // Action state
   const [actionId, setActionId] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [rejectDialogId, setRejectDialogId] = useState(null);
-  const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({});
-  const [statusFilter, setStatusFilter] = useState("all");
 
-  const fetchLeaves = useCallback(async (p = 1, filter = statusFilter) => {
-    setLoading(true);
+  const fetchPending = useCallback(async (p = 1) => {
+    setPendingLoading(true);
     setError(null);
     try {
-      const params = { page: p, limit: 10 };
-      if (filter === "pending_hr") {
-        params.manager_status = "approved";
-        params.hr_status = "pending";
-      } else if (filter !== "all") {
-        params.status = filter;
-      }
-      const res = await axiosInstance.get("/leaves", { params });
-      setLeaves(res.data?.leaves ?? []);
-      setPagination(res.data?.pagination ?? {});
-    } catch (e) {
+      const res = await axiosInstance.get("/leaves", {
+        params: {
+          page: p,
+          limit: 10,
+          manager_status: "approved",
+          hr_status: "pending",
+        },
+      });
+      setPending(res.data?.leaves ?? []);
+      setPendingPagination(res.data?.pagination ?? {});
+    } catch {
       setError("Unable to load leave requests.");
-      setLeaves([]);
+      setPending([]);
     } finally {
-      setLoading(false);
+      setPendingLoading(false);
     }
-  }, [statusFilter]);
+  }, []);
 
-  useEffect(() => { fetchLeaves(1); }, [fetchLeaves]);
+  const fetchHistory = useCallback(async (p = 1) => {
+    setHistoryLoading(true);
+    setError(null);
+    try {
+      const [approvedRes, rejectedRes] = await Promise.all([
+        axiosInstance.get("/leaves", {
+          params: { page: p, limit: 5, hr_status: "approved" },
+        }),
+        axiosInstance.get("/leaves", {
+          params: { page: p, limit: 5, hr_status: "rejected" },
+        }),
+      ]);
+
+      const merged = [
+        ...(approvedRes.data?.leaves ?? []),
+        ...(rejectedRes.data?.leaves ?? []),
+      ].sort(
+        (a, b) =>
+          new Date(b.updated_at ?? b.submitted_at) -
+          new Date(a.updated_at ?? a.submitted_at)
+      );
+
+      setHistory(merged);
+      const ap = approvedRes.data?.pagination ?? {};
+      const rp = rejectedRes.data?.pagination ?? {};
+      setHistoryPagination({
+        total: (ap.total ?? 0) + (rp.total ?? 0),
+        totalPages: Math.max(ap.totalPages ?? 1, rp.totalPages ?? 1),
+        page: p,
+      });
+      setHistoryLoaded(true);
+    } catch {
+      setError("Unable to load history.");
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPending(1);
+  }, [fetchPending]);
+
+  const handleTabChange = (val) => {
+    if (val === "history" && !historyLoaded) fetchHistory(1);
+  };
 
   const handleHRAction = async (id, action, reason = "") => {
     setActionId(id);
@@ -120,121 +370,202 @@ export default function HRLeaveApprovalTab() {
       setSuccess(`Leave request ${action} by HR successfully.`);
       setRejectDialogId(null);
       setRejectionReason("");
-      await fetchLeaves(page);
+      await fetchPending(pendingPage);
+      if (historyLoaded) fetchHistory(historyPage);
     } catch (e) {
-      setError(e.response?.data?.message || `Failed to ${action} leave request.`);
+      setError(
+        e.response?.data?.message || `Failed to ${action} leave request.`
+      );
     } finally {
       setActionId(null);
     }
   };
 
+  const pendingColumns = usePendingColumns({
+    actionId,
+    onApprove: (id) => handleHRAction(id, "approved"),
+    onRejectOpen: (id) => setRejectDialogId(id),
+  });
+
+  const pendingTotalPages =
+    pendingPagination.totalPages ?? pendingPagination.pages ?? 1;
+  const historyTotalPages =
+    historyPagination.totalPages ?? historyPagination.pages ?? 1;
+
+  const pendingTablePagination = { pageIndex: pendingPage - 1, pageSize: 10 };
+  const historyTablePagination = { pageIndex: historyPage - 1, pageSize: 10 };
+
+  const pendingTable = useReactTable({
+    data: pending,
+    columns: pendingColumns,
+    pageCount: pendingTotalPages,
+    state: { pagination: pendingTablePagination },
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater(pendingTablePagination)
+          : updater;
+      const newPage = next.pageIndex + 1;
+      setPendingPage(newPage);
+      fetchPending(newPage);
+    },
+    manualPagination: true,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  const historyTable = useReactTable({
+    data: history,
+    columns: historyColumns,
+    pageCount: historyTotalPages,
+    state: { pagination: historyTablePagination },
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater(historyTablePagination)
+          : updater;
+      const newPage = next.pageIndex + 1;
+      setHistoryPage(newPage);
+      fetchHistory(newPage);
+    },
+    manualPagination: true,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <div className="space-y-4 mt-4">
-      {error && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
-      {success && <Alert className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"><CheckCircle2 className="h-4 w-4" /><AlertDescription>{success}</AlertDescription></Alert>}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {success && (
+        <Alert className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+          <CheckCircle2 className="h-4 w-4" />
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
+      )}
 
+      {/* Toolbar / Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h3 className="font-semibold">Leave Management (HR)</h3>
-          <p className="text-sm text-muted-foreground">Final approval authority for all leave requests</p>
+          <h3 className="font-semibold flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-primary" />
+            Leave Management (HR)
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Final approval authority — acts after manager approval
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); fetchLeaves(1, v); }}>
-            <SelectTrigger className="w-44 h-8 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Leaves</SelectItem>
-              <SelectItem value="pending_hr">Pending HR Action</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button size="sm" variant="outline" onClick={() => fetchLeaves(page)} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
-        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            fetchPending(pendingPage);
+            if (historyLoaded) fetchHistory(historyPage);
+          }}
+          disabled={pendingLoading || historyLoading}
+        >
+          <RefreshCw
+            className={`h-4 w-4 ${
+              pendingLoading || historyLoading ? "animate-spin" : ""
+            }`}
+          />
+        </Button>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {loading ? (
-            <div className="p-4 space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Employee</TableHead><TableHead>Type</TableHead>
-                  <TableHead>From</TableHead><TableHead>To</TableHead>
-                  <TableHead>Days</TableHead><TableHead>Mgr Status</TableHead>
-                  <TableHead>HR Status</TableHead><TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {leaves.length === 0 ? (
-                  <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8 text-sm">No leave requests found.</TableCell></TableRow>
-                ) : (
-                  leaves.map((l) => (
-                    <TableRow key={l.id}>
-                      <TableCell className="text-sm font-medium">
-                        {l.employee ? `${l.employee.first_name} ${l.employee.last_name}` : "—"}
-                        {l.employee?.department && <div className="text-xs text-muted-foreground">{l.employee.department}</div>}
-                      </TableCell>
-                      <TableCell className="text-xs">{l.leave_type?.replace("_", " ")}</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{fmtDate(l.start_date)}</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{fmtDate(l.end_date)}</TableCell>
-                      <TableCell className="text-xs tabular-nums">{l.total_days ?? "—"}</TableCell>
-                      <TableCell><StatusBadge status={l.manager_status} /></TableCell>
-                      <TableCell><StatusBadge status={l.hr_status} /></TableCell>
-                      <TableCell>
-                        {l.manager_status === "approved" && l.hr_status === "pending" ? (
-                          <div className="flex gap-1.5">
-                            <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-emerald-500/40 text-emerald-700 hover:bg-emerald-500/10" disabled={actionId === l.id} onClick={() => handleHRAction(l.id, "approved")}>
-                              {actionId === l.id ? <RefreshCw className="h-3 w-3 animate-spin" /> : <ThumbsUp className="h-3 w-3" />}Approve
-                            </Button>
-                            <Dialog open={rejectDialogId === l.id} onOpenChange={(open) => { if (!open) { setRejectDialogId(null); setRejectionReason(""); } }}>
-                              <DialogTrigger asChild>
-                                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-red-500/40 text-red-600 hover:bg-red-500/10" onClick={() => setRejectDialogId(l.id)}>
-                                  <ThumbsDown className="h-3 w-3" />Reject
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-[400px]">
-                                <DialogHeader><DialogTitle>Reject Leave Request</DialogTitle><DialogDescription>Provide a reason for rejection.</DialogDescription></DialogHeader>
-                                <div className="space-y-3 py-2">
-                                  <Textarea value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} placeholder="Enter rejection reason…" rows={3} className="resize-none" />
-                                </div>
-                                <DialogFooter>
-                                  <Button variant="outline" onClick={() => { setRejectDialogId(null); setRejectionReason(""); }}>Cancel</Button>
-                                  <Button variant="destructive" disabled={!rejectionReason.trim() || actionId === l.id} onClick={() => handleHRAction(l.id, "rejected", rejectionReason)}>
-                                    {actionId === l.id && <RefreshCw className="h-4 w-4 animate-spin mr-1.5" />}Confirm Reject
-                                  </Button>
-                                </DialogFooter>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {l.manager_status !== "approved" ? "Awaiting manager" : "Processed"}
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-
-      {(pagination.totalPages ?? pagination.pages ?? 1) > 1 && (
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">{pagination.total} total</span>
-          <div className="flex gap-1.5">
-            <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => { const p = page - 1; setPage(p); fetchLeaves(p); }}>Previous</Button>
-            <Button size="sm" variant="outline" disabled={page >= (pagination.totalPages ?? pagination.pages ?? 1)} onClick={() => { const p = page + 1; setPage(p); fetchLeaves(p); }}>Next</Button>
+      {/* Reject dialog */}
+      <Dialog
+        open={!!rejectDialogId}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRejectDialogId(null);
+            setRejectionReason("");
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Reject Leave Request</DialogTitle>
+            <DialogDescription>
+              Provide a reason for rejection.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Enter rejection reason…"
+              rows={3}
+              className="resize-none"
+            />
           </div>
-        </div>
-      )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setRejectDialogId(null);
+                setRejectionReason("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={!rejectionReason.trim() || !!actionId}
+              onClick={() =>
+                handleHRAction(rejectDialogId, "rejected", rejectionReason)
+              }
+            >
+              {!!actionId && (
+                <RefreshCw className="h-4 w-4 animate-spin mr-1.5" />
+              )}
+              Confirm Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tabs */}
+      <Tabs defaultValue="pending" onValueChange={handleTabChange}>
+        <TabsList className="h-9">
+          <TabsTrigger value="pending" className="gap-1.5 text-xs">
+            <Clock className="h-3.5 w-3.5" />
+            Pending
+            {pending.length > 0 && (
+              <span className="ml-1 rounded-full bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 font-medium">
+                {pendingPagination.total ?? pending.length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="history" className="gap-1.5 text-xs">
+            <History className="h-3.5 w-3.5" />
+            History
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Pending tab */}
+        <TabsContent value="pending" className="space-y-3 mt-3">
+          <LeaveDataTable
+            table={pendingTable}
+            columns={pendingColumns}
+            loading={pendingLoading}
+            emptyMessage="No leaves awaiting HR action."
+          />
+          <DataTablePagination table={pendingTable} />
+        </TabsContent>
+
+        {/* History tab */}
+        <TabsContent value="history" className="space-y-3 mt-3">
+          <LeaveDataTable
+            table={historyTable}
+            columns={historyColumns}
+            loading={historyLoading}
+            emptyMessage="No history yet."
+          />
+          <DataTablePagination table={historyTable} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

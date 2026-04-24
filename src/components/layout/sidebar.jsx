@@ -7,13 +7,14 @@ import {
   SidebarMenuButton, SidebarRail,
 } from "@/components/ui/sidebar"
 import {
+    Banknote,
   Calendar,
   CalendarDays,
   ClipboardCheck,
   Clock,
   Coins,
   CoinsIcon,
-  DoorOpen, LayoutDashboard, LogOut, Repeat, Timer, UserCheck, Users,
+  DoorOpen, Gavel, Hammer, HammerIcon, LayoutDashboard, LogOut, Repeat, Timer, UserCheck, Users,
   Wallet,
 } from "lucide-react"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -74,6 +75,8 @@ export function AppSidebar() {
     { title: "Overtime Request", href: "/admin/overtime", icon: Timer,  },
     { title: "Payroll", href: "/admin/payroll", icon: Wallet },
     { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck },
+    { title: "Salary Stucture", href: "/admin/salary-stucture", icon: Banknote },
+    { title: "Policies", href: "/admin/policies", icon: Gavel },
 
   
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
@@ -91,13 +94,16 @@ export function AppSidebar() {
     { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut },
     { title: "payroll", href: "/hr/payroll", icon: Wallet },
+    { title: "Salary Stucture", href: "/hr/salary-stucture", icon: Banknote },
+    { title: "Policies", href: "/hr/policies", icon: Gavel },
   
     //manager
     { title: "My Attendance", href: "/manager", icon: Clock, manager: true },
     // { title: "Employees Management", href: "/manager/employee-management", icon: Users,hr: true  },
     { title: "leave Approvel", href: "/manager/leaveapprovel", icon: ClipboardCheck, manager: true },
     { title: "Overtime Request", href: "/manager/overtime", icon: Timer, manager: true },
-    { title: "Shift Request", href: "/manager/shift-request", icon: Repeat, manager: true },
+    { title: "payroll", href: "/manager/payroll", icon: Wallet },
+    //{ title: "Shift Request", href: "/manager/shift-request", icon: Repeat, manager: true },
     
    
     // { title: "Shift Management", href: "/manager/shift-management", icon: Calendar, manager: true },
@@ -145,9 +151,10 @@ export function AppSidebar() {
       const adminAllowed = [
         // "/dashboard",
         "/admin/dashboard",
+        "/admin/policies",
         "/admin/employee-management",
         "/admin/shift-management",
-  
+        "/admin/salary-stucture",
         "/admin/leaveapproveltab",
         "/admin/change-shift",
         "/admin/overtime",

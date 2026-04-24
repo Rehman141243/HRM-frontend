@@ -1,6 +1,6 @@
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import ManagerLeaveApprovalTab from "../../../../containers/admin/ManagerLeaveApprovalTab";
+import ManagerLeaveApprovalTab from "../../../../containers/admin/adminleaveapprovel/ManagerLeaveApprovalTab";
 
 
 export default function Page() {

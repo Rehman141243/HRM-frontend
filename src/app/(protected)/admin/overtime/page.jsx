@@ -1,7 +1,7 @@
 
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import ManagerOvertimeTab from "../../../../containers/admin/ManagerOvertimeTab";
+import ManagerOvertimeTab from "../../../../containers/admin/adminovertime/ManagerOvertimeTab";
 
 
 

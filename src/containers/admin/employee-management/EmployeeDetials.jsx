@@ -11,7 +11,7 @@ import { Pencil, ArrowLeft, FileText, ExternalLink } from "lucide-react";
 import { getUser } from "@/lib/auth";
 
 const breadcrumbData = [
-  { name: "Employees", url: "/employee-management" },
+  { name: "Employees", url: "/admin/employee-management" },
   { name: "Employee Details", url: "#" },
 ];
 

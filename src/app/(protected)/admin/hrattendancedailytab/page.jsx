@@ -1,9 +1,7 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import HRAttendanceDailyTab from "../../../../containers/admin/HRAttendanceDailyTab";
+import HRAttendanceDailyTab from "../../../../containers/admin/hrattendance/HRAttendanceDailyTab";
 
 
-
-import ManagerLeaveApprovalTab from "../../../../containers/admin/ManagerLeaveApprovalTab";
 
 
 export default function Page() {
