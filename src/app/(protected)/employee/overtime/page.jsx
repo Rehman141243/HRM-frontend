@@ -1,9 +1,9 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import OvertimeTab from "../../../../containers/employee/OvertimeTab";
+import OvertimeTab from "../../../../containers/employee/overtime/overtime";
 
 export default function Page() {
   const breadcrumbData = [
-    { name: "OverTime Request", url: "/employee/overtime" },
+    { name: "Over Time Request", url: "/employee/overtime" },
   ]
   
     return (

@@ -10,6 +10,7 @@ import {
     Banknote,
   Calendar,
   CalendarDays,
+  CalendarClock,
   ClipboardCheck,
   Clock,
   Coins,
@@ -81,7 +82,7 @@ export function AppSidebar() {
   
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
     { title: "Leave", href: "/employee/leave", icon: CalendarDays, employeeOnly: true },
-    //{ title: "Change Shift", href: "/employee/change-shift", icon: Repeat, employeeOnly: true },
+    { title: "My Shifts", href: "/employee/shift", icon: CalendarClock, employeeOnly: true },
     { title: "Overtime Request", href: "/employee/overtime", icon: Timer, employeeOnly: true },
     { title: "Payroll", href: "/employee/payroll", icon: Coins, employeeOnly: true },
     //hr

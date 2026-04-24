@@ -1,0 +1,224 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import axiosInstance from "@/lib/axiosInstance";
+import { todayDateStr } from "@/components/common/common";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertCircle, CalendarDays, RefreshCw } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { DataTable } from "@/components/common/data-table";
+import TableToolbar from "@/components/common/table-toolbar";
+import { shiftColumns } from "./shift-columns";
+
+const PAGE_SIZE = 10;
+
+export default function Shift() {
+	const [shifts, setShifts] = useState([]);
+	const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, pages: 1 });
+	const [pageIndex, setPageIndex] = useState(0);
+	const [pageSize, setPageSize] = useState(PAGE_SIZE);
+	const [selectedDate, setSelectedDate] = useState(todayDateStr());
+	const [shiftStatus, setShiftStatus] = useState("all");
+	const [loading, setLoading] = useState(true);
+	const [refreshing, setRefreshing] = useState(false);
+	const [error, setError] = useState(null);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const statusParams = useMemo(() => {
+		if (shiftStatus === "active") return { is_active: true };
+		if (shiftStatus === "inactive") return { is_active: false };
+		return {};
+	}, [shiftStatus]);
+
+	const fetchShifts = useCallback(async ({ targetPage = 1, limit = pageSize, date = selectedDate, silent = false } = {}) => {
+		if (silent) {
+			setRefreshing(true);
+		} else {
+			setLoading(true);
+		}
+
+		setError(null);
+
+		try {
+			const response = await axiosInstance.get("/attendance/shifts/me", {
+				params: {
+					page: targetPage,
+					limit,
+					...statusParams,
+					history: true,
+					date,
+				},
+			});
+
+			setShifts(response.data?.data ?? []);
+			setPagination({
+				page: response.data?.pagination?.page ?? targetPage,
+				limit: response.data?.pagination?.limit ?? limit,
+				total: response.data?.pagination?.total ?? 0,
+				pages: response.data?.pagination?.pages ?? 1,
+			});
+		} catch (fetchError) {
+			setShifts([]);
+			setError(fetchError?.response?.data?.message || fetchError?.message || "Unable to load your shifts right now.");
+		} finally {
+			setLoading(false);
+			setRefreshing(false);
+		}
+	}, [pageSize, selectedDate, statusParams]);
+
+	useEffect(() => {
+		fetchShifts({ targetPage: pageIndex + 1, limit: pageSize, date: selectedDate });
+	}, [fetchShifts, pageIndex, pageSize, selectedDate]);
+
+	const activeShifts = useMemo(() => shifts.filter((shift) => shift?.is_active), [shifts]);
+	const historicalShifts = useMemo(() => shifts.filter((shift) => !shift?.is_active), [shifts]);
+	const currentShift = activeShifts[0] ?? null;
+	const filteredShifts = useMemo(() => {
+		const query = searchTerm.trim().toLowerCase();
+
+		if (!query) return shifts;
+
+		return shifts.filter((shiftAssignment) => {
+			const fullName = `${shiftAssignment.employee?.first_name ?? ""} ${shiftAssignment.employee?.last_name ?? ""}`.toLowerCase();
+			return [
+				shiftAssignment.shift?.name,
+				shiftAssignment.assigned_from,
+				shiftAssignment.assigned_to,
+				fullName,
+			]
+				.filter(Boolean)
+				.some((value) => String(value).toLowerCase().includes(query));
+		});
+	}, [searchTerm, shifts]);
+
+	const columns = useMemo(() => shiftColumns, []);
+
+	const handleDateChange = (value) => {
+		setSelectedDate(value);
+		setPageIndex(0);
+	};
+
+	const handleStatusChange = (value) => {
+		setShiftStatus(value);
+		setPageIndex(0);
+	};
+
+	const handleRefresh = () => {
+		fetchShifts({ targetPage: pageIndex + 1, limit: pageSize, date: selectedDate, silent: true });
+	};
+
+	return (
+		<div className="space-y-4 pt-4 md:pt-6">
+			<div className="rounded-2xl border bg-card/80 p-4 shadow-sm backdrop-blur">
+				<div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] xl:items-start">
+					<div className="space-y-4">
+						<div className="space-y-1">
+							<div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+								<CalendarDays className="h-4 w-4" />
+								My Shifts
+							</div>
+							<h2 className="text-2xl font-semibold tracking-tight">Assigned shift history</h2>
+							<p className="max-w-2xl text-sm text-muted-foreground">
+								View your active assignment and shift history for the selected date without leaving this page.
+							</p>
+						</div>
+
+						<div className="flex flex-wrap gap-3">
+							<div className="rounded-xl border bg-background/60 px-3 py-2">
+								<div className="text-xs text-muted-foreground">Total assignments</div>
+								<div className="text-lg font-semibold tabular-nums">{pagination.total ?? 0}</div>
+							</div>
+							<div className="rounded-xl border bg-background/60 px-3 py-2">
+								<div className="text-xs text-muted-foreground">Active today</div>
+								<div className="text-lg font-semibold tabular-nums">{activeShifts.length}</div>
+							</div>
+							<div className="rounded-xl border bg-background/60 px-3 py-2">
+								<div className="text-xs text-muted-foreground">History on page</div>
+								<div className="text-lg font-semibold tabular-nums">{historicalShifts.length}</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="rounded-2xl border bg-background/70 p-3 shadow-sm">
+						<TableToolbar
+							placeholder="Search shifts on this page…"
+							onSearchChange={setSearchTerm}
+							className="border-0 bg-transparent p-0 shadow-none"
+							rightSlot={
+								<div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                                 
+									<div className="space-y-1.5">
+										<Input
+											id="shift-date"
+											type="date"
+											value={selectedDate}
+											onChange={(event) => handleDateChange(event.target.value)}
+											className="sm:w-45"
+										/>
+									</div>
+									<div className="space-y-1.5">
+										<Select value={shiftStatus} onValueChange={handleStatusChange}>
+											<SelectTrigger id="shift-status" className="sm:w-40">
+												<SelectValue placeholder="All shifts" />
+											</SelectTrigger>
+											<SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-40">
+												<SelectItem value="all">All shifts</SelectItem>
+												<SelectItem value="active">Active only</SelectItem>
+												<SelectItem value="inactive">Inactive only</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+									<Button variant="outline" onClick={handleRefresh} disabled={refreshing || loading} className="gap-2">
+										<RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+										Refresh
+									</Button>
+								</div>
+							}
+						/>
+					</div>
+				</div>
+			</div>
+
+			{error && (
+				<Alert variant="destructive">
+					<AlertCircle className="h-4 w-4" />
+					<AlertDescription>{error}</AlertDescription>
+				</Alert>
+			)}
+
+			<div className="rounded-2xl border bg-card/70 p-4 shadow-sm">
+				<div className="mb-4 flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+					<div>
+						<h3 className="text-base font-semibold">Shift assignments</h3>
+						<p className="text-sm text-muted-foreground">
+							{currentShift
+								? `Current shift: ${currentShift.shift?.name ?? "—"}`
+								: "No active shift assignment found for the selected date."}
+						</p>
+					</div>
+					<p className="text-sm text-muted-foreground">
+						Showing {filteredShifts.length} result(s) on this page
+					</p>
+				</div>
+				<DataTable
+					data={filteredShifts}
+					columns={columns}
+					page={pageIndex}
+					pageSize={pageSize}
+					total={pagination.total}
+					setPage={setPageIndex}
+					setPageSize={setPageSize}
+					pagination
+					columnsBtn={false}
+					isLoading={loading}
+					loadingText="Loading your shift assignments…"
+				/>
+			</div>
+		</div>
+	);
+}

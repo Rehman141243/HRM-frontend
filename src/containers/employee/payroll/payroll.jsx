@@ -24,14 +24,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser } from "@/lib/auth";
-import { DesignationBadge, EmptyState, fmtNum, fmtPKR, getPermissions, MONTH_NAMES, MONTH_SHORT, normalizePayroll, normalizeSalaryStructure, StatusBadge } from "../../components/modal-components/modalcomponents"
-import PoliciesTab from "../../components/modal-components/policy-tab";
-import EmployeePayrollHistoryModal from "../../components/modals/EmployeePayrollHistoryModal";
-import SalaryStructureModal from "../../components/modals/SalaryStructureModal";
-import EditStructureModal from "../../components/modals/EditStructureModal";
-import CreateStructureModal from "../../components/modals/createstucturemodal";
-import PayrollDetailModal from '../../components/modals/Payrolldetailsmodal'
-import GenerateModal from '../../components/modals/generatemodal'
+import { DesignationBadge, EmptyState, fmtNum, fmtPKR, getPermissions, MONTH_NAMES, MONTH_SHORT, normalizePayroll, normalizeSalaryStructure, StatusBadge } from "../../../components/modal-components/modalcomponents"
+import PoliciesTab from "../../../components/modal-components/policy-tab";
+import EmployeePayrollHistoryModal from "../../../components/modals/EmployeePayrollHistoryModal";
+import SalaryStructureModal from "../../../components/modals/SalaryStructureModal";
+import EditStructureModal from "../../../components/modals/EditStructureModal";
+import CreateStructureModal from "../../../components/modals/createstucturemodal";
+import PayrollDetailModal from '../../../components/modals/Payrolldetailsmodal'
+import GenerateModal from '../../../components/modals/generatemodal'
 
 export default function PayrollService() {
   const [user, setUser] = useState(null);

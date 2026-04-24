@@ -17,16 +17,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { DataTable } from "@/components/common/data-table";
+import TableToolbar from "@/components/common/table-toolbar";
 
 import {
   Alert,
@@ -47,8 +48,9 @@ import {
 
 } from "lucide-react";
 
-import { fmtDate, StatusBadge, todayDateStr } from "@/components/common/common";
-import  { useCallback, useEffect,useState } from "react";
+import { todayDateStr } from "@/components/common/common";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getOvertimeColumns } from "./overtime-columns";
 
 
 
@@ -60,7 +62,14 @@ export default function OvertimeTab() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [page, setPage] = useState(1);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState(null);
+  const [cancelReason, setCancelReason] = useState("Plans changed");
+  const [cancellingId, setCancellingId] = useState(null);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(8);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const [form, setForm] = useState({
     date: todayDateStr(),
@@ -71,12 +80,16 @@ export default function OvertimeTab() {
   });
 
   // GET /attendance/overtime-requests/me → { success, data: [], pagination }
-  const fetchRequests = useCallback(async (p = 1) => {
+  const fetchRequests = useCallback(async (p = 0, size = pageSize) => {
     setLoading(true);
     setError(null);
     try {
       const res = await axiosInstance.get("/attendance/overtime-requests/me", {
-        params: { page: p, limit: 8 },
+        params: {
+          page: p + 1,
+          limit: size,
+          ...(statusFilter !== "all" ? { status: statusFilter } : {}),
+        },
       });
       setRequests(res.data?.data ?? []);
       setPagination(res.data?.pagination ?? {});
@@ -86,9 +99,12 @@ export default function OvertimeTab() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [pageSize, statusFilter]);
 
-  useEffect(() => { fetchRequests(1); }, [fetchRequests]);
+  useEffect(() => {
+    setPage(0);
+    fetchRequests(0, pageSize);
+  }, [fetchRequests, pageSize, statusFilter]);
 
   // Auto-calculate hours from start/end time
   useEffect(() => {
@@ -118,7 +134,8 @@ export default function OvertimeTab() {
       setSuccess("Overtime request submitted successfully!");
       setForm({ date: todayDateStr(), start_time: "", end_time: "", hours: "", reason: "" });
       setDialogOpen(false);
-      await fetchRequests(1);
+      setPage(0);
+      await fetchRequests(0, pageSize);
     } catch (e) {
       setError(e.response?.data?.message || "Failed to submit overtime request.");
     } finally {
@@ -126,10 +143,111 @@ export default function OvertimeTab() {
     }
   };
 
+  const handleCancelRequest = useCallback((request) => {
+    if (!request?.id) return;
+    setRequestToCancel(request);
+    setCancelReason("Plans changed");
+    setCancelDialogOpen(true);
+  }, []);
+
+  const handleConfirmCancel = async () => {
+    if (!requestToCancel?.id) return;
+
+    const reason = cancelReason.trim() || "Plans changed";
+
+    setCancellingId(requestToCancel.id);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const res = await axiosInstance.put(`/attendance/overtime-requests/${requestToCancel.id}/cancel`, {
+        cancel_reason: reason,
+      });
+      setSuccess(res.data?.message || "Overtime request cancelled successfully!");
+      setCancelDialogOpen(false);
+      setRequestToCancel(null);
+      await fetchRequests(page, pageSize);
+    } catch (e) {
+      setError(e.response?.data?.message || "Failed to cancel overtime request.");
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  const total = pagination.total ?? 0;
+
+  const filteredRequests = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return requests;
+
+    return requests.filter((request) => {
+      const values = [
+        request.date,
+        request.start_time,
+        request.end_time,
+        request.hours,
+        request.reason || "",
+        request.status || "",
+      ];
+      return values.some((value) => String(value).toLowerCase().includes(term));
+    });
+  }, [requests, search]);
+
+  const columns = useMemo(
+    () => getOvertimeColumns({ onCancel: handleCancelRequest, cancellingId }),
+    [handleCancelRequest, cancellingId]
+  );
+
   return (
     <div className="space-y-4 mt-4">
       {error && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
       {success && <Alert className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"><CheckCircle2 className="h-4 w-4" /><AlertDescription>{success}</AlertDescription></Alert>}
+
+      <Dialog
+        open={cancelDialogOpen}
+        onOpenChange={(open) => {
+          setCancelDialogOpen(open);
+          if (!open) {
+            setRequestToCancel(null);
+            setCancelReason("Plans changed");
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-110">
+          <DialogHeader>
+            <DialogTitle>Cancel Overtime Request</DialogTitle>
+            <DialogDescription>
+              This will cancel your overtime request and send the cancellation reason.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 py-1">
+            <Label htmlFor="cancel-overtime-reason">Cancel reason</Label>
+            <Textarea
+              id="cancel-overtime-reason"
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="Enter cancellation reason"
+              rows={3}
+              className="resize-none"
+            />
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
+              Keep Request
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmCancel}
+              disabled={!cancelReason.trim() || cancellingId === requestToCancel?.id}
+            >
+              {cancellingId === requestToCancel?.id && <RefreshCw className="mr-1.5 h-4 w-4 animate-spin" />}
+              Confirm Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex items-center justify-between">
         <div>
@@ -140,7 +258,7 @@ export default function OvertimeTab() {
           <DialogTrigger asChild>
             <Button size="sm" className="gap-1.5"><Hourglass className="h-4 w-4" />Request Overtime</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[440px]">
+          <DialogContent className="sm:max-w-110">
             <DialogHeader>
               <DialogTitle>Overtime Request</DialogTitle>
               <DialogDescription>Submit an overtime claim for approval.</DialogDescription>
@@ -197,36 +315,58 @@ export default function OvertimeTab() {
       </div>
 
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-4">
+          <TableToolbar
+            placeholder="Search date, time, reason, status..."
+            total={total}
+            onSearchChange={setSearch}
+            className="mb-4"
+            rightSlot={
+              <div className="flex flex-wrap items-center gap-2">
+                <Select
+                  value={statusFilter}
+                  onValueChange={setStatusFilter}
+                >
+                  <SelectTrigger className="h-8 w-36">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent side="bottom" align="start" sideOffset={6}>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">{total}</span> requests
+                </span>
+              </div>
+            }
+          />
+
           {loading ? (
             <div className="p-4 space-y-2">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Hours</TableHead>
-                  <TableHead>Reason</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {requests.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8 text-sm">No overtime requests found.</TableCell></TableRow>
-                ) : (
-                  requests.map((r) => (
-                    <TableRow key={r.id}>
-                      <TableCell className="text-xs text-muted-foreground">{fmtDate(r.date)}</TableCell>
-                      <TableCell className="tabular-nums text-xs">{r.start_time} – {r.end_time}</TableCell>
-                      <TableCell className="tabular-nums text-sm font-medium">{r.hours}h</TableCell>
-                      <TableCell className="text-xs text-muted-foreground max-w-[140px] truncate">{r.reason || "—"}</TableCell>
-                      <TableCell><StatusBadge status={r.status} /></TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            <DataTable
+              data={filteredRequests}
+              columns={columns}
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              setPage={(nextPage) => {
+                setPage(nextPage);
+                fetchRequests(nextPage, pageSize);
+              }}
+              setPageSize={(nextSize) => {
+                setPage(0);
+                setPageSize(nextSize);
+                fetchRequests(0, nextSize);
+              }}
+              pagination
+              columnsBtn={false}
+              isLoading={false}
+            />
           )}
         </CardContent>
       </Card>
