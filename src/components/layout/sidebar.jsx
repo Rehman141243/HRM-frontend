@@ -96,6 +96,7 @@ export function AppSidebar() {
     { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut },
     { title: "payroll", href: "/hr/payroll", icon: Wallet },
+    { title: "Policies & Stucture", href: "/hr/policies_structure", icon: Gavel },
     { title: "Salary Stucture", href: "/hr/salary-stucture", icon: Banknote },
     { title: "Policies", href: "/hr/policies", icon: Gavel },
   

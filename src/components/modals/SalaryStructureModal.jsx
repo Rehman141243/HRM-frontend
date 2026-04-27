@@ -49,7 +49,7 @@ export default function SalaryStructureModal({ structure, open, onClose, perms, 
   ];
 
   return (
-    <Modal open={open} onClose={onClose} maxWidth="max-w-2xl">
+    <Modal open={open} onClose={onClose} maxWidth="w-6xl" >
       <ModalHeader
         icon={Building2}
         title="Salary Structure"
