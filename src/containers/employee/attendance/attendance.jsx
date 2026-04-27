@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Activity, BarChart3, CalendarDays, LogIn, LogOut, RefreshCw, Timer, TrendingUp } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Activity, BarChart3, CalendarDays, FileText, LogIn, LogOut, RefreshCw, Timer, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 import KpiCard, { fmtTime } from "@/components/common/common";
 import axiosInstance from "@/lib/axiosInstance";
@@ -10,6 +12,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AttendanceReports from "@/containers/employee/attendance-reports/attendance-reports";
+import LateRegularization from "@/containers/employee/late-regularization/late-regularization";
+
+const TAB_ROUTES = {
+	checkin: "/employee/attendance",
+	reports: "/employee/attendance/reports",
+	regularization: "/employee/attendance/regularization",
+};
 
 function fmtLocalTime(localIso) {
 	if (!localIso) return null;
@@ -23,12 +32,13 @@ function fmtLocalTime(localIso) {
 	return fallback.slice(0, 5);
 }
 
-export default function Attendance() {
-	const [activeTab, setActiveTab] = useState("checkin");
+export default function Attendance({ initialTab = "checkin" } = {}) {
+	const router = useRouter();
+	const pathname = usePathname();
+	const [activeTab, setActiveTab] = useState(initialTab);
 	const [currentStatus, setCurrentStatus] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [actionLoading, setActionLoading] = useState(false);
-	const [message, setMessage] = useState(null);
 	const [notes, setNotes] = useState("Checked in from office");
 
 	const fetchStatus = useCallback(async () => {
@@ -63,18 +73,28 @@ export default function Attendance() {
 		return { label: "Pending", accent: "amber" };
 	}, [punchStatus]);
 
+	useEffect(() => {
+		setActiveTab(initialTab);
+	}, [initialTab]);
+
+	const handleTabChange = (nextTab) => {
+		setActiveTab(nextTab);
+		const route = TAB_ROUTES[nextTab];
+		if (route && route !== pathname) {
+			router.push(route);
+		}
+	};
+
 	const submitAttendance = async (endpoint, successText, fallbackNotes) => {
 		setActionLoading(true);
-		setMessage(null);
-
 		try {
 			const res = await axiosInstance.post(endpoint, {
 				notes: notes.trim() || fallbackNotes,
 			});
-			setMessage(res.data?.message || successText);
+			toast.success(res.data?.message || successText);
 			await fetchStatus();
 		} catch (requestError) {
-			// Error toast is dispatched by axios interceptor.
+			// Error toast is dispatched by axios interceptor, do not set message here
 		} finally {
 			setActionLoading(false);
 		}
@@ -83,20 +103,24 @@ export default function Attendance() {
 	return (
 		<div className="mt-4 flex flex-col space-y-4">
 			{/* Tabs */}
-			<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
-				<TabsList className="inline-flex gap-3 bg-card border border-border/40 rounded-lg px-3 py-5 shadow-sm backdrop-blur-sm w-fit">
-					<TabsTrigger value="checkin" className="flex items-center gap-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-6 py-3 transition-all  font-semibold">
+			<Tabs value={activeTab} onValueChange={handleTabChange} className="w-full mt-6">
+				<TabsList className="inline-flex w-fit flex-wrap justify-start gap-2 rounded-2xl border border-border/50 bg-card p-1.5 shadow-sm">
+					<TabsTrigger value="checkin" className="flex-none items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
 						<LogIn className="h-5 w-5" />
 						<span>Check-In/Out</span>
 					</TabsTrigger>
-					<TabsTrigger value="reports" className="flex items-center gap-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-6 py-3 transition-all  font-semibold">
+					<TabsTrigger value="reports" className="flex-none items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
 						<BarChart3 className="h-5 w-5" />
 						<span>Reports</span>
+					</TabsTrigger>
+					<TabsTrigger value="regularization" className="flex-none items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+						<FileText className="h-5 w-5" />
+						<span>Regularization</span>
 					</TabsTrigger>
 				</TabsList>
 
 				{/* Check-in/Out Tab */}
-				<TabsContent value="checkin" className="space-y-4">
+				<TabsContent value="checkin" className="mt-4 space-y-4">
 					<Card className="overflow-hidden border-border/60 bg-transparent py-0 shadow-sm">
 						<div className="bg-linear-to-r from-slate-950 via-slate-900 to-slate-800 text-white ">
 							<div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
@@ -184,11 +208,6 @@ export default function Attendance() {
 							</div>
 						</div>
 
-						{message && (
-							<CardContent className="pt-4">
-								{message && <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">{message}</div>}
-							</CardContent>
-						)}
 					</Card>
 
 					<div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -223,6 +242,11 @@ export default function Attendance() {
 				{/* Reports Tab */}
 				<TabsContent value="reports">
 					<AttendanceReports />
+				</TabsContent>
+
+				{/* Regularization Tab */}
+				<TabsContent value="regularization">
+					<LateRegularization />
 				</TabsContent>
 			</Tabs>
 		</div>

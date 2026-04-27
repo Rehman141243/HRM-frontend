@@ -29,7 +29,7 @@ const getShiftStatus = (shift) => {
 	}
 
 	return {
-		label: "History",
+		label: "Inactive",
 		className: "border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-400",
 	};
 };

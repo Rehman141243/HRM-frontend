@@ -75,7 +75,7 @@ export default function Leave() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("pending");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("desc");
 
   const [form, setForm] = useState({
@@ -100,8 +100,10 @@ export default function Leave() {
           sortOrder,
         },
       });
-      setLeaves(res.data?.leaves ?? []);
-      setPagination(res.data?.pagination ?? {});
+
+      const payload = res.data?.data ?? res.data ?? {};
+      setLeaves(payload?.leaves ?? payload?.records ?? []);
+      setPagination(payload?.pagination ?? {});
     } catch (e) {
       setError("Unable to load leave requests. Please try again later.");
       setLeaves([]);
@@ -175,7 +177,29 @@ export default function Leave() {
     }
   }, [cancelReason, fetchLeaves, leaveToCancel, page, pageSize]);
 
-  const total = pagination.total ?? 0;
+  const total = useMemo(() => {
+    const rawTotal =
+      pagination?.total ??
+      pagination?.totalItems ??
+      pagination?.total_items ??
+      pagination?.count ??
+      pagination?.itemCount ??
+      pagination?.recordsTotal;
+
+    let computedTotal = 0;
+
+    if (typeof rawTotal === "number" && Number.isFinite(rawTotal)) {
+      computedTotal = rawTotal;
+    } else if (rawTotal !== null && rawTotal !== undefined) {
+      const parsedTotal = Number(rawTotal);
+      if (Number.isFinite(parsedTotal)) {
+        computedTotal = parsedTotal;
+      }
+    }
+
+    // Ensure total is at least as large as the visible records
+    return Math.max(computedTotal, leaves.length);
+  }, [pagination, leaves.length]);
 
   const filteredLeaves = useMemo(() => {
     const term = search.trim().toLowerCase();

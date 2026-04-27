@@ -84,6 +84,7 @@ export function AppSidebar() {
     { title: "Leave", href: "/employee/leave", icon: CalendarDays, employeeOnly: true },
     { title: "My Shifts", href: "/employee/shift", icon: CalendarClock, employeeOnly: true },
     { title: "Overtime Request", href: "/employee/overtime", icon: Timer, employeeOnly: true },
+    { title: "Salary Structure", href: "/employee/salary-structure", icon: Banknote, employeeOnly: true },
     { title: "Payroll", href: "/employee/payroll", icon: Coins, employeeOnly: true },
     //hr
     { title: "My Attendance", href: "/hr", icon: Clock, hr: true },

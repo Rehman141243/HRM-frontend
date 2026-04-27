@@ -330,7 +330,7 @@ export default function OvertimeTab() {
                   <SelectTrigger className="h-8 w-36">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
-                  <SelectContent side="bottom" align="start" sideOffset={6}>
+                  <SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-40">
                     <SelectItem value="all">All Statuses</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="approved">Approved</SelectItem>
