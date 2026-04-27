@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertCircle, Calendar, CheckCircle2, Clock, RefreshCw, TrendingUp } from "lucide-react";
+import { AlertCircle, BarChart3, Calendar, CheckCircle2, Clock, RefreshCw, TrendingUp } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable } from "@/components/common/data-table";
-import { DataTablePagination } from "@/components/common/data-table-pagination";
 import TableToolbar from "@/components/common/table-toolbar";
 import StatCard from "@/components/common/stat-card";
 import axiosInstance from "@/lib/axiosInstance";
@@ -86,7 +85,22 @@ export default function AttendanceReports() {
 	};
 
 	const handleRefresh = () => {
-		fetchReports();
+		const hasActiveFilters =
+			Boolean(startDate) ||
+			Boolean(endDate) ||
+			statusFilter !== "all" ||
+			Boolean(searchTerm);
+
+		setStartDate("");
+		setEndDate("");
+		setStatusFilter("all");
+		setSearchTerm("");
+		setDateRangeOpen(false);
+		setPageIndex(0);
+
+		if (!hasActiveFilters) {
+			fetchReports();
+		}
 	};
 
 	const filteredRecords = useMemo(() => {
@@ -117,8 +131,13 @@ export default function AttendanceReports() {
 		<div className="space-y-6 pt-4 md:pt-6">
 			{/* Header */}
 			<div>
-				<h2 className="text-2xl font-bold tracking-tight">Attendance Reports</h2>
-				<p className="text-sm text-muted-foreground mt-1">Review your detailed attendance history and metrics</p>
+				<div className="flex items-center gap-2">
+					<div className="rounded-lg border bg-background p-2 shadow-xs">
+						<BarChart3 className="h-4 w-4 text-muted-foreground" />
+					</div>
+					<h2 className="text-2xl font-bold tracking-tight">Attendance Reports</h2>
+				</div>
+				<p className="mt-2 text-sm text-muted-foreground">Review your detailed attendance history and metrics</p>
 			</div>
 
 			{/* Summary Stats */}
@@ -255,6 +274,7 @@ export default function AttendanceReports() {
 					{/* Search & Toolbar */}
 					<TableToolbar
 						placeholder="Search by date, shift, or name..."
+						searchValue={searchTerm}
 						onSearchChange={setSearchTerm}
 					/>
 
@@ -272,16 +292,12 @@ export default function AttendanceReports() {
 							<DataTable
 								columns={attendanceReportColumns}
 								data={filteredRecords}
-								loading={loading}
-							/>
-
-							{/* Pagination */}
-							<DataTablePagination
-								pageIndex={pageIndex}
+								isLoading={loading}
+								page={pageIndex}
 								pageSize={pageSize}
-								itemCount={pagination.total}
-								onPageChange={setPageIndex}
-								onPageSizeChange={setPageSize}
+								total={pagination.total}
+								setPage={setPageIndex}
+								setPageSize={setPageSize}
 							/>
 						</>
 					)}

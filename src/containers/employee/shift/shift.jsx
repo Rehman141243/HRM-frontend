@@ -109,7 +109,11 @@ export default function Shift() {
 	};
 
 	const handleRefresh = () => {
-		fetchShifts({ targetPage: pageIndex + 1, limit: pageSize, date: selectedDate, silent: true });
+		setShiftStatus("all");
+		setSelectedDate(todayDateStr());
+		setPageIndex(0);
+		setSearchTerm("");
+		fetchShifts({ targetPage: 1, limit: pageSize, date: todayDateStr(), silent: true });
 	};
 
 	return (
@@ -147,33 +151,34 @@ export default function Shift() {
 					<div className="rounded-2xl border bg-background/70 p-3 shadow-sm">
 						<TableToolbar
 							placeholder="Search shifts on this page…"
+							searchValue={searchTerm}
 							onSearchChange={setSearchTerm}
-							className="border-0 bg-transparent p-0 shadow-none"
+							total={filteredShifts.length}
+							className="border-0 bg-transparent p-0 shadow-none md:flex-col md:items-stretch lg:flex-row lg:items-end"
 							rightSlot={
-								<div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                                 
+								<div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:w-auto lg:grid-cols-[11rem_10rem_auto] lg:items-end lg:gap-3">
 									<div className="space-y-1.5">
 										<Input
 											id="shift-date"
 											type="date"
 											value={selectedDate}
 											onChange={(event) => handleDateChange(event.target.value)}
-											className="sm:w-45"
+											className="w-full"
 										/>
 									</div>
 									<div className="space-y-1.5">
 										<Select value={shiftStatus} onValueChange={handleStatusChange}>
-											<SelectTrigger id="shift-status" className="sm:w-40">
+											<SelectTrigger id="shift-status" className="w-full">
 												<SelectValue placeholder="All shifts" />
 											</SelectTrigger>
-											<SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-40">
+											<SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-[10rem]">
 												<SelectItem value="all">All shifts</SelectItem>
 												<SelectItem value="active">Active only</SelectItem>
 												<SelectItem value="inactive">Inactive only</SelectItem>
 											</SelectContent>
 										</Select>
 									</div>
-									<Button variant="outline" onClick={handleRefresh} disabled={refreshing || loading} className="gap-2">
+									<Button variant="outline" onClick={handleRefresh} disabled={refreshing || loading} className="w-full gap-2 sm:col-span-2 lg:col-span-1 lg:w-auto">
 										<RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
 										Refresh
 									</Button>

@@ -18,11 +18,11 @@
 //       router.replace("/login");
 //     }
 //   }, [user]);
-  
+
 //   if (typeof window !== "undefined" && !user) {
 //     return null;
 //   }
- 
+
 //   return (
 //     // <SidebarProvider>
 //     //   <AppSidebar />
@@ -31,7 +31,7 @@
 //     //       <SidebarTrigger className="-ml-1" />
 //     //       <Separator orientation="vertical" className="h-6" />
 //     //       <div className="min-w-0 flex-1">
-      
+
 //     //       </div>
 //     //       <div className="flex items-center gap-2">
 //     //         <ThemeToggle />
@@ -82,6 +82,9 @@ export default function ProtectedLayout({ children }) {
       setReady(true);
     }
   }, []);
+
+
+
 
   if (!ready) return null;
 
