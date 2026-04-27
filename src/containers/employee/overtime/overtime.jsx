@@ -179,7 +179,7 @@ export default function OvertimeTab() {
   const filteredRequests = useMemo(() => {
     const term = search.trim().toLowerCase();
     if (!term) return requests;
-
+  
     return requests.filter((request) => {
       const values = [
         request.date,
@@ -319,6 +319,7 @@ export default function OvertimeTab() {
           <TableToolbar
             placeholder="Search date, time, reason, status..."
             total={total}
+            searchValue={search}    
             onSearchChange={setSearch}
             className="mb-4"
             rightSlot={

@@ -359,6 +359,7 @@ export default function Leave() {
           <TableToolbar
             placeholder="Search type, reason, status..."
             total={total}
+            searchValue={search}    
             onSearchChange={setSearch}
             className="mb-4"
             rightSlot={
