@@ -11,7 +11,7 @@ export default function StatCard({ title, value, hint, icon: Icon, className }) 
           <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
           {Icon ? (
             <div className="rounded-md border bg-background p-2">
-              <Icon className="h-4 w-4 text-muted-foreground" />
+              <Icon className="w-3 h-3 sm:h-4 sm:w-4 text-muted-foreground" />
             </div>
           ) : null}
         </div>

@@ -39,7 +39,7 @@ function BreadcrumbItem({
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("inline-flex items-center gap-1", className)}
+      className={cn("inline-flex text-[10px] sm:text-xs items-center gap-1", className)}
       {...props} />
   );
 }
