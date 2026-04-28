@@ -1,15 +1,15 @@
-import AttendanceReports from "@/containers/shared/hr-manager-employee/attendance-reports/attendance-reports";
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
+import Attendance from "../../../../containers/shared/hr-manager-employee/attendance/attendance";
 
 const breadcrumbData = [
-	{ name: "Attendance Reports", url: "/employee/attendance-reports" },
+	{ name: "My Attendance", url: "/manager/attendance" },
 ];
 
 export default function Page() {
 	return (
 		<>
 			<BreadcrumbComponent data={breadcrumbData} />
-			<AttendanceReports />
+			<Attendance basePath="/manager/attendance" />
 		</>
 	);
 }

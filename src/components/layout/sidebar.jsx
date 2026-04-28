@@ -34,9 +34,9 @@ export function AppSidebar() {
   
     if (designation === "employee") return "/employee/attendance"
   
-    if (designation === "hr") return "/hr"
+    if (designation === "hr") return "/hr/attendance"
   
-    if (designation === "manager") return "/manager"
+    if (designation === "manager") return "/manager/attendance"
   
     return "/login"
   }
@@ -87,7 +87,7 @@ export function AppSidebar() {
     { title: "Salary Structure", href: "/employee/salary-structure", icon: Banknote, employeeOnly: true },
     { title: "Payroll", href: "/employee/payroll", icon: Coins, employeeOnly: true },
     //hr
-    { title: "My Attendance", href: "/hr", icon: Clock, hr: true },
+    { title: "My Attendance", href: "/hr/attendance", icon: Clock, hr: true },
     { title: "Employees Management", href: "/hr/employee-management", icon: Users,hr: true  },
     { title: "Leave Approval", href: "/hr/leaveapproveltab", icon: ClipboardCheck, hr: true },
    // { title: "Change Shift", href: "/hr/change-shift", icon: Repeat, hr: true },
@@ -100,7 +100,7 @@ export function AppSidebar() {
  
   
     //manager
-    { title: "My Attendance", href: "/manager", icon: Clock, manager: true },
+    { title: "My Attendance", href: "/manager/attendance", icon: Clock, manager: true },
     // { title: "Employees Management", href: "/manager/employee-management", icon: Users,hr: true  },
     { title: "leave Approvel", href: "/manager/leaveapprovel", icon: ClipboardCheck, manager: true },
     { title: "Overtime Request", href: "/manager/overtime", icon: Timer, manager: true },
@@ -122,8 +122,8 @@ export function AppSidebar() {
     if (role === "admin") {
       return (
         path !== "/employee/attendance" &&
-        path !== "/hr" &&               // My Attendance (HR)
-        path !== "/manager" &&          // My Attendance (Manager)
+        path !== "/hr/attendance" &&    // My Attendance (HR)
+        path !== "/manager/attendance" && // My Attendance (Manager)
         path !== "/hr/leave"            // My Leave
       )
     }
@@ -181,17 +181,17 @@ export function AppSidebar() {
         item.href.startsWith("/hr/") ||
         item.href === "/hr/employee-management" ||
         item.href === "/hr/shift-management" ||
-         item.href === "/hr"
+         item.href === "/hr/attendance"
       )
     }
   
     // 🟡 MANAGER
     if (designation === "manager") {
       return (
-        item.href.startsWith("/manager/") ||
+          item.href.startsWith("/manager/") ||
         // item.href === "/manager/employee-management" ||
         // item.href === "/shift-management" ||
-              item.href === "/manager"
+            item.href === "/manager/attendance"
       )
     }
   

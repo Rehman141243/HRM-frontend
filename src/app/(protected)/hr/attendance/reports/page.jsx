@@ -2,15 +2,15 @@ import Attendance from "../../../../../containers/shared/hr-manager-employee/att
 import { BreadcrumbComponent } from "../../../../../components/common/breadcrumb-component";
 
 const breadcrumbData = [
-	{ name: "My Attendance", url: "/employee/attendance" },
-	{ name: "Regularization", url: "/employee/attendance/regularization" },
+	{ name: "My Attendance", url: "/hr/attendance" },
+	{ name: "Reports", url: "/hr/attendance/reports" },
 ];
 
 export default function Page() {
 	return (
 		<>
 			<BreadcrumbComponent data={breadcrumbData} />
-			<Attendance initialTab="regularization" basePath="/employee/attendance" />
+			<Attendance initialTab="reports" basePath="/hr/attendance" />
 		</>
 	);
 }

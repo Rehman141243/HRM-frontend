@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { BreadcrumbComponent } from "../../../../../components/common/breadcrumb-component";
-import { AddEmployeeForm } from "../../../../../containers/hr/employee-management/CreateEmployee";
+import { AddEmployeeForm } from "@/containers/shared/admin-hr/employee-management/create-employee";
 import { getUser } from "@/lib/auth";
 
 

@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 
 import KpiCard from "@/components/common/common";
-import AttendanceTab from "../hr/Attendance";
+import AttendanceTab from "../hr/attendance/attendance";
 import MyReportTab from "../hr/MyReportTab";
 
 

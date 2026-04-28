@@ -1,19 +1,7 @@
-import { BreadcrumbComponent } from "../../../components/common/breadcrumb-component";
-import HumanResource from "../../../containers/hr/hr";
-
-
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  const breadcrumbData = [
-    { name: "My Attendance", url: "/hr" },
-  ]
-  
-  return (
-    <>
-      <BreadcrumbComponent data={breadcrumbData} />
-      <HumanResource />
-    </>
-  )
+	redirect("/hr/attendance");
 }
 
 
