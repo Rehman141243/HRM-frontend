@@ -358,9 +358,9 @@ export default function Leave() {
         <CardContent className="p-4">
           <TableToolbar
             placeholder="Search type, reason, status..."
-            total={total}
-            searchValue={search}    
+            searchValue={search}
             onSearchChange={setSearch}
+            total={total}
             className="mb-4"
             rightSlot={
               <div className="flex flex-wrap items-center gap-2">
