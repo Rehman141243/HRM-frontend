@@ -1,4 +1,4 @@
-import ViewEmployeePage from '@/containers/admin/employee-management/EmployeeDetials'
+import ViewEmployeePage from '@/containers/shared/admin-hr/employee-management/employee-detials'
 const ViewEmployee=()=>{
   return(
     <>

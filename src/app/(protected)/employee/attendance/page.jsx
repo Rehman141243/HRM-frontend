@@ -1,4 +1,4 @@
-import Attendance from "../../../../containers/employee/attendance/attendance";
+import Attendance from "../../../../containers/shared/hr-manager-employee/attendance/attendance";
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
 
 const breadcrumbData = [
@@ -9,7 +9,7 @@ export default function Page() {
 	return (
 		<>
 			<BreadcrumbComponent data={breadcrumbData} />
-			<Attendance />
+			<Attendance basePath="/employee/attendance" />
 		</>
 	);
 }

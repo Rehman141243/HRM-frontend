@@ -1,6 +1,6 @@
 
 
-import EmployeeContainer from "@/containers/admin/employee-management/Employee";
+import EmployeeContainer from "@/containers/shared/admin-hr/employee-management/employee";
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
 const breadcrumbData = [
     { name: "Employees", url: "/admin/employee-management" },

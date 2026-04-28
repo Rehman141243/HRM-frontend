@@ -1,4 +1,4 @@
-import UpdateEmployeePage from '@/containers/admin/employee-management/UpdateEmployee'
+import UpdateEmployeePage from '@/containers/shared/admin-hr/employee-management/update-employee'
 const UpdateEmployeeDetials=()=>{
   return(
 
