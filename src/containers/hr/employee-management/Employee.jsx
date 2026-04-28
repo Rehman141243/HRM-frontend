@@ -293,8 +293,9 @@ const columns = useMemo(
         <CardContent className="pt-0">
           <TableToolbar
             placeholder="Search by name, ID, department, phone…"
-            total={total}
+            searchValue={query}
             onSearchChange={setQuery}
+            total={total}
             className="mb-4"
             rightSlot={
               <div className="text-sm text-muted-foreground">
