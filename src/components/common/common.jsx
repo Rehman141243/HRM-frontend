@@ -117,9 +117,9 @@ export default function KpiCard({ icon: Icon, label, value, hint, accent, loadin
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
             <div className="space-y-1 min-w-0">
-              <p className="text-xs font-medium text-muted-foreground truncate">{label}</p>
-              <p className="text-2xl font-bold tabular-nums tracking-tight">{value ?? "—"}</p>
-              {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">{label}</p>
+              <p className="text-xs sm:text-2xl font-bold tabular-nums tracking-tight">{value ?? "—"}</p>
+              {hint && <p className="text-[10px] sm:text-xs text-muted-foreground">{hint}</p>}
             </div>
             <div className="rounded-xl bg-background/60 p-2.5 shrink-0 border border-border/40">
               <Icon className="h-4 w-4 text-muted-foreground" />
