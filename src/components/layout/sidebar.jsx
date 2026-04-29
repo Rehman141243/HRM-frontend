@@ -74,8 +74,8 @@ export function AppSidebar() {
     { title: "Overtime Request", href: "/admin/overtime-request", icon: Timer, admin: true },
     { title: "Payroll", href: "/admin/payroll", icon: Wallet, admin: true },
     { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck, admin: true },
-    { title: "Salary Structure", href: "/admin/salary-stucture", icon: Banknote, admin: true },
-    { title: "Policies", href: "/admin/policies", icon: Gavel, admin: true },
+    { title: "Policies & Structure", href: "/admin/policies-structure", icon: Gavel, admin: true },
+
 
 
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
@@ -93,7 +93,7 @@ export function AppSidebar() {
     { title: "Attendance Reports", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut, hr: true },
     { title: "Payroll", href: "/hr/payroll", icon: Wallet, hr: true },
-    { title: "Policies & Structure", href: "/hr/policies_structure", icon: Gavel, hr: true },
+    { title: "Policies & Structure", href: "/hr/policies-structure", icon: Gavel, hr: true },
 
 
     //manager
@@ -145,10 +145,11 @@ export function AppSidebar() {
       const adminAllowed = [
         // "/dashboard",
         "/admin/dashboard",
+        "/admin/policies-structure",
         "/admin/policies",
         "/admin/employee-management",
         "/admin/shift-management",
-        "/admin/salary-stucture",
+        "/admin/policies-structure/salary-structure",
         "/admin/leave-approval",
         "/admin/change-shift",
         "/admin/overtime-request",

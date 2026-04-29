@@ -52,6 +52,7 @@ export function PolicySelect({
   value,
   onChange,
   policies,
+  policyType,
   placeholder,
   required = false,
   disabled = false,
@@ -59,8 +60,14 @@ export function PolicySelect({
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const selectedPolicy = policies.find((p) => p.id === value);
-  const filteredPolicies = policies.filter((p) =>
+  const availablePolicies = Array.isArray(policies)
+    ? policies
+    : Array.isArray(policyType && policies?.[policyType])
+      ? policies[policyType]
+      : [];
+
+  const selectedPolicy = availablePolicies.find((p) => p.id === value);
+  const filteredPolicies = availablePolicies.filter((p) =>
     p.name?.toLowerCase().includes(search.toLowerCase())
   );
 

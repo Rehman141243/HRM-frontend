@@ -280,6 +280,7 @@ export function EmployeeSearchCombobox({ value, onChange, disabled }) {
   
   // ─── Salary Component Editor ──────────────────────────────────────────────────
   export function ComponentEditor({ title, components, onChange, basisOptions = ["basic_salary", "gross_salary"] }) {
+    const label = title || "Items";
     const addComponent = () => {
       onChange([...components, { name: "", type: "fixed", value: "", basis: basisOptions[0], apply_proration: true }]);
     };
@@ -293,14 +294,14 @@ export function EmployeeSearchCombobox({ value, onChange, disabled }) {
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{title}</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{label}</p>
           <button onClick={addComponent}
             className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium">
             <Plus className="w-3 h-3" />Add
           </button>
         </div>
         {components.length === 0 && (
-          <p className="text-xs text-gray-400 italic py-2">No {title.toLowerCase()} added yet.</p>
+          <p className="text-xs text-gray-400 italic py-2">No {label.toLowerCase()} added yet.</p>
         )}
         {components.map((comp, i) => (
           <div key={i} className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3 space-y-2">
