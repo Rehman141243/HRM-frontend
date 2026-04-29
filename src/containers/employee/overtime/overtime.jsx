@@ -744,7 +744,7 @@ export default function OvertimeTab() {
               </div>
             </div>
             <DialogFooter className='flex flex-row justify-center sm:justify-normal'>
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+              {/* <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button> */}
               <Button
                 onClick={handleSubmit}
                 disabled={submitting || !form.date || !form.start_time || !form.end_time || !form.hours || parseFloat(form.hours) <= 0}
@@ -824,25 +824,25 @@ export default function OvertimeTab() {
                   data={filteredRequests}
                   fields={overtimeCardFields}
                   highlight={overtimeCardHighlight}
-                  actions={(row) => {
-                    const isPending = String(row.status || "").toLowerCase() === "pending";
-                    if (!isPending) return null;
-                    return (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="w-full gap-1.5"
-                        disabled={cancellingId === row.id}
-                        onClick={() => handleCancelRequest(row)}
-                      >
-                        {cancellingId === row.id && (
-                          <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                        )}
-                        Cancel Request
-                      </Button>
-                    );
-                  }}
+                  // actions={(row) => {
+                  //   const isPending = String(row.status || "").toLowerCase() === "pending";
+                  //   if (!isPending) return null;
+                  //   return (
+                  //     <Button
+                  //       type="button"
+                  //       variant="destructive"
+                  //       size="sm"
+                  //       className="w-full gap-1.5"
+                  //       disabled={cancellingId === row.id}
+                  //       onClick={() => handleCancelRequest(row)}
+                  //     >
+                  //       {cancellingId === row.id && (
+                  //         <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                  //       )}
+                  //       Cancel Request
+                  //     </Button>
+                  //   );
+                  // }}
                   keyExtractor={(row) => row.id}
                   isLoading={false}
                   emptyText="No overtime requests found."

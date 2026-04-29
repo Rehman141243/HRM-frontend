@@ -69,7 +69,7 @@ import ThemeToggle from "@/components/common/theme-toggle";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { isAuthenticated,signout } from "@/lib/auth";
+import { isAuthenticated, signout } from "@/lib/auth";
 import { DoorOpen } from "lucide-react";
 
 export default function ProtectedLayout({ children }) {
@@ -102,10 +102,13 @@ export default function ProtectedLayout({ children }) {
           <div className="min-w-0 flex-1" />
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <DoorOpen
-                  className="ml-auto size-4 opacity-60 cursor-pointer"
-                  onClick={() => signout()}
-                />
+            <span className="cursor-pointer p-1 rounded-sm border">
+
+              <DoorOpen
+                className="ml-auto size-4 opacity-60 text-black dark:text-white"
+                onClick={() => signout()}
+              />
+            </span>
           </div>
         </header>
         <div className="flex flex-1 flex-col p-4 sm:p-6 gap-6">
