@@ -38,15 +38,23 @@ export default function LoginPage() {
       await signin({ email, password });
       const user = getUser();
 
-
-      // If your backend returns role field:
+      // Route users based on their role
       if (user?.role === "admin") {
         router.push("/admin/dashboard");
-      } else if (user?.role === "user" && user?.designation === "hr") {
-        router.push("/hr");
-      } else if (user?.role === "user" && user?.designation === "manager") {
-        router.push("/manager");
+      } else if (user?.role === "user") {
+        // For non-admin users, check designation
+        const designation = user?.designation?.toLowerCase();
+        
+        if (designation === "hr") {
+          router.push("/hr/attendance");
+        } else if (designation === "manager") {
+          router.push("/manager/attendance");
+        } else {
+          // Default route for employees
+          router.push("/employee/attendance");
+        }
       } else {
+        // Fallback for any other role
         router.push("/employee/attendance");
       }
     } catch (err) {

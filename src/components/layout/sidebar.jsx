@@ -21,7 +21,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { getUser } from "@/lib/auth"
+import { getUser, signout } from "@/lib/auth"
 import { useEffect, useState } from "react"
 
 
@@ -68,16 +68,15 @@ export function AppSidebar() {
   const allNavItems = [
     //{ title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     // { title: "Employees", href: "/admin/employee-management", icon: Users },
-     { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { title: "Shift Management", href: "/admin/shift-management", icon: Calendar },
-    { title: "Employees Management", href: "/admin/employee-management", icon: Users, },
-    { title: "Leave Approval", href: "/admin/leaveapproveltab", icon: ClipboardCheck, },
-    //{ title: "Change Shift", href: "/admin/change-shift", icon: Repeat,  },
-    { title: "Overtime Request", href: "/admin/overtime", icon: Timer,  },
-    { title: "Payroll", href: "/admin/payroll", icon: Wallet },
-    { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck },
-    { title: "Salary Stucture", href: "/admin/salary-stucture", icon: Banknote },
-    { title: "Policies", href: "/admin/policies", icon: Gavel },
+    { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, admin: true },
+    { title: "Shift Management", href: "/admin/shift-management", icon: Calendar, admin: true },
+    { title: "Employees Management", href: "/admin/employee-management", icon: Users, admin: true },
+    { title: "Leave Approval", href: "/admin/leave-approval", icon: ClipboardCheck, admin: true },
+    { title: "Overtime Request", href: "/admin/overtime-request", icon: Timer, admin: true },
+    { title: "Payroll", href: "/admin/payroll", icon: Wallet, admin: true },
+    { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck, admin: true },
+    { title: "Salary Structure", href: "/admin/salary-stucture", icon: Banknote, admin: true },
+    { title: "Policies", href: "/admin/policies", icon: Gavel, admin: true },
 
   
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
@@ -88,27 +87,21 @@ export function AppSidebar() {
     { title: "Payroll", href: "/employee/payroll", icon: Coins, employeeOnly: true },
     //hr
     { title: "My Attendance", href: "/hr/attendance", icon: Clock, hr: true },
-    { title: "Employees Management", href: "/hr/employee-management", icon: Users,hr: true  },
-    { title: "Leave Approval", href: "/hr/leaveapproveltab", icon: ClipboardCheck, hr: true },
-   // { title: "Change Shift", href: "/hr/change-shift", icon: Repeat, hr: true },
-    { title: "Overtime Request", href: "/hr/overtime", icon: Timer, hr: true },
+    { title: "Employees Management", href: "/hr/employee-management", icon: Users, hr: true },
+    { title: "Leave Approval", href: "/hr/leave-approval", icon: ClipboardCheck, hr: true },
+    { title: "Overtime Request", href: "/hr/overtime-request", icon: Timer, hr: true },
     { title: "Attendance Reports", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
     { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
-    { title: "My leave", href: "/hr/leave", icon: LogOut },
-    { title: "Payroll", href: "/hr/payroll", icon: Wallet },
-    { title: "Policies & Stucture", href: "/hr/policies_structure", icon: Gavel },
+    { title: "My leave", href: "/hr/leave", icon: LogOut, hr: true },
+    { title: "Payroll", href: "/hr/payroll", icon: Wallet, hr: true },
+    { title: "Policies & Structure", href: "/hr/policies_structure", icon: Gavel, hr: true },
  
   
     //manager
     { title: "My Attendance", href: "/manager/attendance", icon: Clock, manager: true },
-    // { title: "Employees Management", href: "/manager/employee-management", icon: Users,hr: true  },
-    { title: "leave Approvel", href: "/manager/leaveapprovel", icon: ClipboardCheck, manager: true },
+    { title: "Leave Approval", href: "/manager/leave-approval", icon: ClipboardCheck, manager: true },
     { title: "Overtime Request", href: "/manager/overtime", icon: Timer, manager: true },
-    { title: "payroll", href: "/manager/payroll", icon: Wallet },
-    //{ title: "Shift Request", href: "/manager/shift-request", icon: Repeat, manager: true },
-    
-   
-    // { title: "Shift Management", href: "/manager/shift-management", icon: Calendar, manager: true },
+    { title: "Payroll", href: "/manager/payroll", icon: Wallet, manager: true },
 
 
   
@@ -157,13 +150,11 @@ export function AppSidebar() {
         "/admin/employee-management",
         "/admin/shift-management",
         "/admin/salary-stucture",
-        "/admin/leaveapproveltab",
+        "/admin/leave-approval",
         "/admin/change-shift",
-        "/admin/overtime",
+        "/admin/overtime-request",
         "/admin/hrattendancedailytab",
         "/admin/payroll",
-        "/admin/leaveapprovel",
-        "/admin/overtime",
         "/admin/shift-request",
       ]
   
@@ -265,7 +256,7 @@ export function AppSidebar() {
                 </div>
                 <DoorOpen
                   className="ml-auto size-4 opacity-60 cursor-pointer"
-                  onClick={() => router.push("/login")}
+                  onClick={() => signout()}
                 />
               </SidebarMenuButton>
             </SidebarMenuItem>
