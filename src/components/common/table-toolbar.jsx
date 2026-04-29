@@ -25,7 +25,7 @@ export default function TableToolbar({
       <div className={cn("flex flex-col gap-2", showSearch ? "flex-1 md:max-w-md" : "md:min-w-0") }>
         {showSearch ? (
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary transition-colors duration-200 group-focus-within:text-secondary/70" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:h-4 sm:w-4 text-primary transition-colors duration-200 " />
             <Input
               placeholder={placeholder || "Search…"}
               value={searchValue ?? ""}
@@ -33,7 +33,7 @@ export default function TableToolbar({
               className={cn(
                 "pl-10",
                 "border-input focus:border-ring",
-                "focus-visible:ring-0 focus-visible:ring-offset-0 focus:shadow-none focus-visible:shadow-none"
+                "focus-visible:ring-0 focus-visible:ring-offset-0 focus:shadow-none focus-visible:shadow-none text-xs sm:text-sm placeholder:text-xs sm:placeholder:text-sm"
               )}
             />
           </div>

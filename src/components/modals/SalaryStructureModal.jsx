@@ -56,7 +56,7 @@ export default function SalaryStructureModal({ structure, open, onClose, perms, 
         subtitle={`${emp.first_name || ""} ${emp.last_name || ""} · ${emp.designation || "—"}`}
         badge={
           <span className={cn(
-            "inline-block px-2 py-0.5 rounded-full text-xs font-semibold border",
+            "inline-block px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold border",
             s.is_active
               ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
               : "bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
@@ -126,15 +126,19 @@ export default function SalaryStructureModal({ structure, open, onClose, perms, 
               <hr className="border-gray-100 dark:border-gray-700" />
               <div>
                 <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" />Allowances
+                  <TrendingUp className="w-3 h-3" /> 
+                  <p className="text-xs">
+
+                  Allowances
+                  </p>
                 </p>
                 <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/40 dark:bg-emerald-900/10 overflow-hidden">
                   <table className="w-full text-sm">
                     <tbody className="divide-y divide-emerald-100/60 dark:divide-emerald-900/30">
                       {s.allowances.map((a, i) => (
                         <tr key={i}>
-                          <td className="px-4 py-2.5 text-gray-700 dark:text-gray-300">{a.name}</td>
-                          <td className="px-4 py-2.5 text-right font-mono font-semibold text-emerald-700 dark:text-emerald-400">
+                          <td className="px-4 py-2.5 text-gray-700 dark:text-gray-300 text-xs sm:text-sm">{a.name}</td>
+                          <td className="px-4 py-2.5 text-right font-mono font-semibold text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm">
                             {a.type === "percentage"
                               ? `${a.value}% of ${(a.basis || "basic_salary").replace(/_/g, " ")}`
                               : fmtPKR(a.value ?? a.amount)}
@@ -161,8 +165,8 @@ export default function SalaryStructureModal({ structure, open, onClose, perms, 
                     <tbody className="divide-y divide-red-100/60 dark:divide-red-900/30">
                       {s.deductions.map((d, i) => (
                         <tr key={i}>
-                          <td className="px-4 py-2.5 text-gray-700 dark:text-gray-300">{d.name}</td>
-                          <td className="px-4 py-2.5 text-right font-mono font-semibold text-red-600 dark:text-red-400">
+                          <td className="px-4 py-2.5 text-gray-700 dark:text-gray-300 text-xs sm:text-sm">{d.name}</td>
+                          <td className="px-4 py-2.5 text-right font-mono font-semibold text-red-600 dark:text-red-400 text-xs sm:text-sm">
                             {d.type === "percentage"
                               ? `${d.value}% of ${(d.basis || "gross_salary").replace(/_/g, " ")}`
                               : fmtPKR(d.value ?? d.amount)}
@@ -188,11 +192,11 @@ export default function SalaryStructureModal({ structure, open, onClose, perms, 
                   key={label}
                   className="rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 px-4 py-3"
                 >
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-widest mb-1">
+                  <p className="text-[10px] sm:text-sm text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-widest mb-1">
                     {label}
                   </p>
                   <p className={cn(
-                    "text-sm font-semibold",
+                    "text-xs sm:text-sm font-semibold",
                     val ? "text-gray-900 dark:text-gray-100" : "text-gray-300 dark:text-gray-600"
                   )}>
                     {val || "Not linked"}

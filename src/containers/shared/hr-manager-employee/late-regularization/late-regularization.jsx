@@ -1098,11 +1098,12 @@ export default function LateRegularization() {
             </Card>
 
             {/* ── Raise dialog ── */}
-            <Dialog open={raiseDialogOpen} onOpenChange={(open) => (open ? setRaiseDialogOpen(true) : closeRaiseDialog())}>
-                <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+            <Dialog open={raiseDialogOpen}  onOpenChange={(open) => (open ? setRaiseDialogOpen(true) : closeRaiseDialog())}>
+
+                <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl ">
                     <DialogHeader>
                         <DialogTitle className='text-xs sm:text-sm'>Raise regularization request</DialogTitle>
-                        <DialogDescription className='text-[10px] sm:text-sm'>
+                        <DialogDescription className='text-[10px] sm:text-xs'>
                             Attendance ID is prefilled from your own attendance record. Only employee-safe fields are included in the payload.
                         </DialogDescription>
                     </DialogHeader>
@@ -1110,9 +1111,9 @@ export default function LateRegularization() {
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <Label htmlFor="attendance-id">Attendance ID</Label>
-                            <Input id="attendance-id" value={selectedAttendanceId} readOnly className="bg-muted/60 text-xs placeholder:text-xs sm:text-sm sm:placeholder:text-sm" />
+                            <Input id="attendance-id" value={selectedAttendanceId} readOnly className="bg-muted/60 text-[10px]" />
                             <p className="text-xs text-muted-foreground">Selected from your attendance history and sent as attendance_id.</p>
-                            {formErrors.attendance_id && <p className="text-xs text-destructive">{formErrors.attendance_id}</p>}
+                            <p className="text-[10px] sm:text-xs ">{formErrors.attendance_id && <p className="text-xs text-destructive">{formErrors.attendance_id}</p>}</p>
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -1125,12 +1126,12 @@ export default function LateRegularization() {
                                         setFormErrors((c) => ({ ...c, type: undefined, custom_type: undefined }));
                                     }}
                                 >
-                                    <SelectTrigger id="type" className={formErrors.type ? "border-destructive" : ""}>
-                                        <SelectValue placeholder="Select a type" />
+                                    <SelectTrigger id="type" className={formErrors.type ? "border-destructive" : " text-[10px] sm:text-xs "}>
+                                        <SelectValue placeholder="Select a type"  className='text-[10px] sm:text-xs '/>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {regularizationTypes.map((opt) => (
-                                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                            <SelectItem key={opt.value} value={opt.value} className='text-[10px] sm:text-xs '>{opt.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -1146,7 +1147,7 @@ export default function LateRegularization() {
                                         placeholder="e.g. internet_outage"
                                         value={formData.custom_type}
                                         onChange={(e) => setFormData((c) => ({ ...c, custom_type: e.target.value }))}
-                                        className={formErrors.custom_type ? "border-destructive" : " text-xs placeholder:text-xs sm:text-sm sm:placeholder:text-sm"}
+                                        className={formErrors.custom_type ? "border-destructive" : " text-xs placeholder:text-xs sm:text-xs sm:placeholder:text-xs"}
                                     />
                                     <p className="text-xs text-muted-foreground">Required only when the type is Other.</p>
                                     {formErrors.custom_type && <p className="text-xs text-destructive">{formErrors.custom_type}</p>}
@@ -1162,7 +1163,7 @@ export default function LateRegularization() {
                                 placeholder="Explain why this attendance needs regularization"
                                 value={formData.reason}
                                 onChange={(e) => setFormData((c) => ({ ...c, reason: e.target.value }))}
-                                className={formErrors.reason ? "border-destructive" : "text-xs placeholder:text-xs sm:text-sm sm:placeholder:text-sm"}
+                                className={formErrors.reason ? "border-destructive" : "text-xs placeholder:text-xs sm:text-xs sm:placeholder:text-xs"}
                             />
                             <p className="text-xs text-muted-foreground">Minimum 5 characters. Keep it clear and factual.</p>
                             {formErrors.reason && <p className="text-xs text-destructive">{formErrors.reason}</p>}
@@ -1174,12 +1175,12 @@ export default function LateRegularization() {
                                 id="supporting-documents"
                                 type="file"
                                 multiple
-                                className='text-xs placeholder:text-xs sm:text-sm sm:placeholder:text-sm'
+                                className='text-xs placeholder:text-xs sm:text-[10px] sm:placeholder:text-[10px]'
                                 onChange={(e) => setFormData((c) => ({ ...c, documents: Array.from(e.target.files || []) }))}
                             />
                             <p className="text-xs text-muted-foreground">Optional. Attach screenshots, receipts, or other proof.</p>
                             {formData.documents.length > 0 && (
-                                <div className="flex flex-wrap gap-2 pt-1">
+                                <div className="flex flex-wrap gap-2 pt-1 text-[10px] sm:text-xs ">
                                     {formData.documents.map((file) => (
                                         <Badge key={`${file.name}-${file.size}`} variant="outline" className="max-w-full truncate">
                                             {file.name}

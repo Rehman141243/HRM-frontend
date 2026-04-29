@@ -197,11 +197,11 @@ export const getPermissions = (user) => {
             </div>
           )}
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mt-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{title}</h2>
               {badge}
             </div>
-            {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
+            {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 ">{subtitle}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2 ml-3 shrink-0">

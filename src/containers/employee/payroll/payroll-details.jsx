@@ -85,8 +85,8 @@ export default function PayrollDetailsPage() {
         </Button>
         <div>
 
-          <h2 className="text-2xl font-semibold tracking-tight">Payroll Details</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h2 className="text-base sm:text-2xl font-semibold tracking-tight">Payroll Details</h2>
+          <p className="text-xs smtext-sm text-muted-foreground mt-1">
             {MONTH_NAMES[(period.month || 1) - 1]} {period.year}
           </p>
         </div>
@@ -152,13 +152,13 @@ export default function PayrollDetailsPage() {
       </div>
 
       {/* Floating sticky back button */}
-      <Button
+      {/* <Button
         variant="outline"
         className="fixed bottom-6 left-6 z-50 gap-2 shadow-md bg-background/90 hover:bg-background"
         onClick={() => router.push("/employee/payroll")}
       >
         <ArrowLeft className="h-4 w-4" /> Back to Payroll
-      </Button>
+      </Button> */}
     </div>
   );
 }

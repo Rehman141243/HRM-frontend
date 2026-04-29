@@ -254,10 +254,7 @@ export function AppSidebar() {
                   <span className="text-sm font-medium truncate">{displayName}</span>
                   <span className="text-xs text-muted-foreground truncate">{displayEmail}</span>
                 </div>
-                <DoorOpen
-                  className="ml-auto size-4 opacity-60 cursor-pointer"
-                  onClick={() => signout()}
-                />
+              
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

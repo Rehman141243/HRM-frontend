@@ -428,48 +428,42 @@ export default function Shift() {
 					</div>
 
 					{/* Right: filters */}
-					<div className="rounded-2xl border bg-background/70 p-3 shadow-sm">
-						<TableToolbar
-							placeholder="Search shifts on this page…"
-							searchValue={searchTerm}
-							onSearchChange={setSearchTerm}
-							total={filteredShifts.length}
-							className="border-0 bg-transparent p-0 shadow-none md:flex-col md:items-stretch lg:flex-row lg:items-end"
-							rightSlot={
-								<div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:w-auto lg:grid-cols-[11rem_10rem_auto] lg:items-end lg:gap-3">
-									<div className="space-y-1.5">
-										<Input
-											id="shift-date"
-											type="date"
-											value={selectedDate}
-											onChange={(event) => handleDateChange(event.target.value)}
-											className="w-full h-8 text-xs sm:h-9 sm:text-sm"
-										/>
-									</div>
-									<div className="space-y-1.5">
-										<Select value={shiftStatus} onValueChange={handleStatusChange}>
-											<SelectTrigger id="shift-status" className="w-full h-8 text-xs sm:h-9 sm:text-sm">
-												<SelectValue placeholder="All shifts" />
-											</SelectTrigger>
-											<SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-[10rem]">
-												<SelectItem value="all"      className="text-xs sm:text-sm">All shifts</SelectItem>
-												<SelectItem value="active"   className="text-xs sm:text-sm">Active only</SelectItem>
-												<SelectItem value="inactive" className="text-xs sm:text-sm">Inactive only</SelectItem>
-											</SelectContent>
-										</Select>
-									</div>
-									<Button
-										variant="outline"
-										onClick={handleRefresh}
-										disabled={refreshing || loading}
-										className="w-full h-8 text-xs gap-1.5 sm:h-9 sm:text-sm sm:gap-2 sm:col-span-2 lg:col-span-1 lg:w-auto"
-									>
-										<RefreshCw className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", refreshing && "animate-spin")} />
-										Refresh
-									</Button>
+					<div className="rounded-2xl border bg-background/70 p-3 shadow-sm  gap-2">
+					<TableToolbar
+ 							placeholder="Search shifts on this page…"
+ 							searchValue={searchTerm}
+ 							onSearchChange={setSearchTerm}
+ 							total={filteredShifts.length}
+ 							className="border-0 bg-transparent p-0 shadow-none md:flex-col md:items-stretch lg:flex-row lg:items-end"
+ 							
+ 						/>
+							<div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:w-auto lg:grid-cols-[11rem_10rem_auto] lg:items-end lg:gap-3 mt-2">
+ 									<div className="space-y-1.5">
+ 										<Input
+ 											id="shift-date"
+ 											type="date"
+ 											value={selectedDate}
+ 											onChange={(event) => handleDateChange(event.target.value)}
+ 											className="w-full"
+ 										/>
+																		</div>
+ 									<div className="space-y-1.5">
+ 										<Select value={shiftStatus} onValueChange={handleStatusChange}>
+ 											<SelectTrigger id="shift-status" className="w-full">
+ 												<SelectValue placeholder="All shifts" />
+ 											</SelectTrigger>
+ 											<SelectContent position="popper" align="start" side="bottom" sideOffset={6} className="w-[10rem]">
+ 												<SelectItem value="all">All shifts</SelectItem>
+ 												<SelectItem value="active">Active only</SelectItem>
+ 												<SelectItem value="inactive">Inactive only</SelectItem>
+ 											</SelectContent>
+ 										</Select>
+ 									</div>
+ 									<Button variant="outline" onClick={handleRefresh} disabled={refreshing || loading} className="w-full gap-2 sm:col-span-2 lg:col-span-1 lg:w-auto">
+ 										<RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+ 										Refresh
+								</Button>
 								</div>
-							}
-						/>
 					</div>
 				</div>
 			</div>

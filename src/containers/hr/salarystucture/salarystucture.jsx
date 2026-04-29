@@ -414,7 +414,7 @@ export default function SalaryStructuresPage() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40 hover:bg-muted/40 border-b">
-                  {["Employee", "Structure", "Basic Salary", "Allowances", "Deductions", "Currency", "Status", ""].map((h) => (
+                  {["Employee", "Structure", "Basic Salary", "Allowances", "Deductions", "Currency", "Status", "action"].map((h) => (
                     <TableHead key={h} className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground py-3">
                       {h}
                     </TableHead>

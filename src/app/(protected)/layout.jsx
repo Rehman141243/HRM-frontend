@@ -69,7 +69,8 @@ import ThemeToggle from "@/components/common/theme-toggle";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { isAuthenticated } from "@/lib/auth";
+import { isAuthenticated,signout } from "@/lib/auth";
+import { DoorOpen } from "lucide-react";
 
 export default function ProtectedLayout({ children }) {
   const router = useRouter();
@@ -97,10 +98,14 @@ export default function ProtectedLayout({ children }) {
       <SidebarInset>
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur supports-backdrop-filter:bg-background/60">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="h-6" />
+          {/* <Separator orientation="vertical" className="h-6" /> */}
           <div className="min-w-0 flex-1" />
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <DoorOpen
+                  className="ml-auto size-4 opacity-60 cursor-pointer"
+                  onClick={() => signout()}
+                />
           </div>
         </header>
         <div className="flex flex-1 flex-col p-4 sm:p-6 gap-6">
