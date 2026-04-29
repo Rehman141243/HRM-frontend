@@ -65,7 +65,14 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
     setError(null);
     setSuccess(null);
     try {
-      await axiosInstance.put(`/attendance/overtime-requests/${id}/approve`);
+      const r = (role || "").toLowerCase();
+      if (r === "manager") {
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/manager-action`, { action: "approve" });
+      } else if (r === "hr") {
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/hr-action`, { action: "approve" });
+      } else {
+        await axiosInstance.put(`/attendance/overtime-requests/${id}/approve`);
+      }
       setSuccess("Overtime request approved successfully!");
       onActionSuccess?.();
       fetchPending(pageRef.current, pageSizeRef.current);
@@ -81,9 +88,22 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
     setError(null);
     setSuccess(null);
     try {
-      await axiosInstance.put(`/attendance/overtime-requests/${id}/reject`, {
-        reason: reason || "",
-      });
+      const r = (role || "").toLowerCase();
+      if (r === "manager") {
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/manager-action`, {
+          action: "reject",
+          rejection_reason: reason || "",
+        });
+      } else if (r === "hr") {
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/hr-action`, {
+          action: "reject",
+          rejection_reason: reason || "",
+        });
+      } else {
+        await axiosInstance.put(`/attendance/overtime-requests/${id}/reject`, {
+          reason: reason || "",
+        });
+      }
       setSuccess("Overtime request rejected successfully!");
       setRejectDialogId(null);
       setRejectReason("");

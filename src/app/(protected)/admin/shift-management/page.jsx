@@ -2,7 +2,7 @@
 
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component"
-import AdminShiftManagement from "../../../../containers/admin/shift-management/admin-shift"
+import ShiftManagement from "../../../../containers/shared/admin-hr/shift-management/shift-management"
 
 export default function Page() {
   const breadcrumbData = [
@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <AdminShiftManagement />
+      <ShiftManagement />
     </>
   )
 }

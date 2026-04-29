@@ -7,7 +7,7 @@ import {
   SidebarMenuButton, SidebarRail,
 } from "@/components/ui/sidebar"
 import {
-    Banknote,
+  Banknote,
   Calendar,
   CalendarDays,
   CalendarClock,
@@ -28,16 +28,16 @@ import { useEffect, useState } from "react"
 export function AppSidebar() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const router=useRouter();
+  const router = useRouter();
   const getDefaultRoute = () => {
     if (role === "admin") return "/admin/employee-management"
-  
+
     if (designation === "employee") return "/employee/attendance"
-  
+
     if (designation === "hr") return "/hr/attendance"
-  
+
     if (designation === "manager") return "/manager/attendance"
-  
+
     return "/login"
   }
   useEffect(() => {
@@ -46,21 +46,21 @@ export function AppSidebar() {
     setUser(u)
     setLoading(false)
   }, [])
-  
+
   useEffect(() => {
     if (loading) return
-  
+
     if (!user) {
       router.push('/login')
       return
     }
-  
+
     const path = window.location.pathname
-  
+
     if (!canAccess(path)) {
       router.push(getDefaultRoute())
     }
-  
+
   }, [user, loading])
 
 
@@ -69,7 +69,6 @@ export function AppSidebar() {
     //{ title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     // { title: "Employees", href: "/admin/employee-management", icon: Users },
     { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, admin: true },
-    { title: "Shift Management", href: "/admin/shift-management", icon: Calendar, admin: true },
     { title: "Employees Management", href: "/admin/employee-management", icon: Users, admin: true },
     { title: "Leave Approval", href: "/admin/leave-approval", icon: ClipboardCheck, admin: true },
     { title: "Overtime Request", href: "/admin/overtime-request", icon: Timer, admin: true },
@@ -78,7 +77,7 @@ export function AppSidebar() {
     { title: "Salary Structure", href: "/admin/salary-stucture", icon: Banknote, admin: true },
     { title: "Policies", href: "/admin/policies", icon: Gavel, admin: true },
 
-  
+
     { title: "Attendance", href: "/employee/attendance", icon: Clock, employeeOnly: true },
     { title: "Leave", href: "/employee/leave", icon: CalendarDays, employeeOnly: true },
     { title: "My Shifts", href: "/employee/shift", icon: CalendarClock, employeeOnly: true },
@@ -88,15 +87,15 @@ export function AppSidebar() {
     //hr
     { title: "My Attendance", href: "/hr/attendance", icon: Clock, hr: true },
     { title: "Employees Management", href: "/hr/employee-management", icon: Users, hr: true },
+    { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "Leave Approval", href: "/hr/leave-approval", icon: ClipboardCheck, hr: true },
     { title: "Overtime Request", href: "/hr/overtime-request", icon: Timer, hr: true },
     { title: "Attendance Reports", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
-    { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut, hr: true },
     { title: "Payroll", href: "/hr/payroll", icon: Wallet, hr: true },
     { title: "Policies & Structure", href: "/hr/policies_structure", icon: Gavel, hr: true },
- 
-  
+
+
     //manager
     { title: "My Attendance", href: "/manager/attendance", icon: Clock, manager: true },
     { title: "Leave Approval", href: "/manager/leave-approval", icon: ClipboardCheck, manager: true },
@@ -104,7 +103,7 @@ export function AppSidebar() {
     { title: "Payroll", href: "/manager/payroll", icon: Wallet, manager: true },
 
 
-  
+
 
   ]
 
@@ -120,27 +119,27 @@ export function AppSidebar() {
         path !== "/hr/leave"            // My Leave
       )
     }
-  
+
     // 🟢 USER ROLE
     if (role === "user") {
-  
+
       // ✅ employee → allow ALL /employee/*
       if (designation === "employee") {
         return path.startsWith("/employee/")
       }
-  
+
       // ✅ hr + manager → ALL pages
       if (designation === "hr" || designation === "manager") {
         return true
       }
     }
-  
+
     return false
   }
   const navItems = allNavItems.filter((item) => {
     const role = (user?.role ?? "").toLowerCase()
     const designation = (user?.designation ?? "").toLowerCase()
-  
+
     // 🔴 ADMIN → explicit allowed list (BEST PRACTICE)
     if (role === "admin") {
       const adminAllowed = [
@@ -157,35 +156,35 @@ export function AppSidebar() {
         "/admin/payroll",
         "/admin/shift-request",
       ]
-  
+
       return adminAllowed.includes(item.href)
     }
-  
+
     // 👤 EMPLOYEE
     if (designation === "employee") {
       return item.href.startsWith("/employee/")
     }
-  
+
     // 🟣 HR
     if (designation === "hr") {
       return (
         item.href.startsWith("/hr/") ||
         item.href === "/hr/employee-management" ||
         item.href === "/hr/shift-management" ||
-         item.href === "/hr/attendance"
+        item.href === "/hr/attendance"
       )
     }
-  
+
     // 🟡 MANAGER
     if (designation === "manager") {
       return (
-          item.href.startsWith("/manager/") ||
+        item.href.startsWith("/manager/") ||
         // item.href === "/manager/employee-management" ||
         // item.href === "/shift-management" ||
-            item.href === "/manager/attendance"
+        item.href === "/manager/attendance"
       )
     }
-  
+
     return false
   })
   //const navItems = allNavItems.filter(item => item.roles.includes(role))
