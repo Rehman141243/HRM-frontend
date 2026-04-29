@@ -1,16 +1,15 @@
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import ManagerLeaveApprovalTab from "../../../../containers/hr/hrleaveapproveltab";
-
+import LeaveApprovalTab from "../../../../containers/shared/admin-hr/leave-approval/leave-approval";
 
 export default function Page() {
   const breadcrumbData = [
-    { name: "Leave Approvel", url: "/hr/leaveapprovetab" },
-  ]
+    { name: "Leave Approvel Request", url: "/manager/leaveapprovel" },
+  ];
+
   return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <ManagerLeaveApprovalTab />
+      <LeaveApprovalTab role="manager" />
     </>
-  )
+  );
 }
-

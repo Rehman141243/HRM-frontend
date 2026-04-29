@@ -73,20 +73,23 @@ import { isAuthenticated } from "@/lib/auth";
 
 export default function ProtectedLayout({ children }) {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Check if user is authenticated
     if (!isAuthenticated()) {
+      // Redirect to login if not authenticated
       router.replace("/login");
     } else {
-      setReady(true);
+      // User is authenticated, ready to render
+      setIsReady(true);
     }
-  }, []);
+  }, [router]);
 
-
-
-
-  if (!ready) return null;
+  // Show nothing while checking authentication
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <SidebarProvider>

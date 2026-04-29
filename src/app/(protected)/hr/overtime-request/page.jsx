@@ -1,17 +1,16 @@
 
 import { BreadcrumbComponent } from "../../../../components/common/breadcrumb-component";
-import ManagerLeaveApprovalTab from "../../../../containers/admin/adminleaveapprovel/ManagerLeaveApprovalTab";
-
+import OvertimeRequestTab from "../../../../containers/shared/admin-hr/overtime-request/overtime-request";
 
 export default function Page() {
   const breadcrumbData = [
-    { name: "Leave Approvel", url: "/admin/leaveapprovetab" },
-  ]
+    { name: "Overtime Requests", url: "/hr/overtime" },
+  ];
   return (
     <>
       <BreadcrumbComponent data={breadcrumbData} />
-      <ManagerLeaveApprovalTab/>
+      <OvertimeRequestTab role="hr" />
     </>
-  )
+  );
 }
 
