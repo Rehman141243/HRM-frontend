@@ -1,16 +1,15 @@
-import { BreadcrumbComponent } from '../../../../components/common/breadcrumb-component';
-import  PayrollService from '../../../../containers/hr/payroll/payroll'
-export default function adminpolicies() {
- 
-const breadcrumbData = [
-  { name: "Payroll Services", url: "/admin/payroll" },
-]
+import { BreadcrumbComponent } from '@/components/common/breadcrumb-component';
+import Payroll from '@/containers/shared/admin-hr/payroll/payroll';
+
+export default function HRPayrollPage() {
+  const breadcrumbItems = [
+    { name: 'Payroll', url: '/hr/payroll' },
+  ];
+
   return (
-  <>
-  
-  <BreadcrumbComponent data={breadcrumbData} />
-  <PayrollService/>
-  </>
+    <>
+      <BreadcrumbComponent data={breadcrumbItems} />
+      <Payroll />
+    </>
   );
 }
-

@@ -1,15 +1,15 @@
 import { BreadcrumbComponent } from '@/components/common/breadcrumb-component';
-import Payroll from '@/containers/shared/admin-hr/payroll/payroll';
+import Reports from '@/containers/shared/admin-hr/reports/reports';
 
-export default function AdminPayrollPage() {
+export default function AdminReportsPage() {
   const breadcrumbItems = [
-    { name: 'Payroll', url: '/admin/payroll' },
+    { name: 'Reports', url: '/admin/reports' },
   ];
 
   return (
     <>
       <BreadcrumbComponent data={breadcrumbItems} />
-      <Payroll />
+      <Reports />
     </>
   );
 }
