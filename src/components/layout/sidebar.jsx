@@ -72,9 +72,9 @@ export function AppSidebar() {
     { title: "Employees Management", href: "/admin/employee-management", icon: Users, admin: true },
     { title: "Leave Approval", href: "/admin/leave-approval", icon: ClipboardCheck, admin: true },
     { title: "Overtime Request", href: "/admin/overtime-request", icon: Timer, admin: true },
+    { title: "Policies & Structure", href: "/admin/policies-structure", icon: Gavel, admin: true },
     { title: "Payroll", href: "/admin/payroll", icon: Wallet, admin: true },
     { title: "Attendance Reports", href: "/admin/hrattendancedailytab", icon: UserCheck, admin: true },
-    { title: "Policies & Structure", href: "/admin/policies-structure", icon: Gavel, admin: true },
 
 
 
@@ -90,10 +90,10 @@ export function AppSidebar() {
     { title: "Shift Management", href: "/hr/shift-management", icon: Calendar, hr: true },
     { title: "Leave Approval", href: "/hr/leave-approval", icon: ClipboardCheck, hr: true },
     { title: "Overtime Request", href: "/hr/overtime-request", icon: Timer, hr: true },
+    { title: "Policies & Structure", href: "/hr/policies-structure", icon: Gavel, hr: true },
     { title: "Attendance Reports", href: "/hr/hrattendancedailytab", icon: UserCheck, hr: true },
     { title: "My leave", href: "/hr/leave", icon: LogOut, hr: true },
     { title: "Payroll", href: "/hr/payroll", icon: Wallet, hr: true },
-    { title: "Policies & Structure", href: "/hr/policies-structure", icon: Gavel, hr: true },
 
 
     //manager
@@ -254,7 +254,7 @@ export function AppSidebar() {
                   <span className="text-sm font-medium truncate">{displayName}</span>
                   <span className="text-xs text-muted-foreground truncate">{displayEmail}</span>
                 </div>
-              
+
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
