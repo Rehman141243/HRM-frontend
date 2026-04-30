@@ -36,7 +36,7 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-,     "src/app/(protected)/admin/dashboard/page.jsx"  ],
+,     "src/app/(protected)/admin/dashboard/page.jsx", "src/config/config.js"  ],
   "exclude": [
     "node_modules"
   ],

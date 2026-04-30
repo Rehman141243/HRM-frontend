@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { signin, getUser } from "@/lib/auth";
+import { signin } from "@/lib/auth";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -35,8 +35,17 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await signin({ email, password });
-      const user = getUser();
+      const response = await signin({ email, password });
+      const user = response?.user;
+
+      if (!user) {
+        setError("Login response invalid. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      // Give localStorage a moment to sync
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Route users based on their role
       if (user?.role === "admin") {
@@ -58,6 +67,7 @@ export default function LoginPage() {
         router.push("/employee/attendance");
       }
     } catch (err) {
+      console.error("Login error:", err);
       if (err?.response?.status === 404) {
         // User does not exist in database
         setError("You are not allowed to enter.");
@@ -67,7 +77,6 @@ export default function LoginPage() {
       } else {
         setError("Something went wrong. Please try again.");
       }
-    } finally {
       setLoading(false);
     }
   };
