@@ -1,9 +1,17 @@
-import { PolicyRouteScreen } from '@/containers/shared/admin-hr/policies-structure';
+import { BreadcrumbComponent } from '@/components/common/breadcrumb-component';
+import { PolicyFormRouter } from '@/containers/shared/admin-hr/policies-structure';
 
 export default function CreatePolicy() {
+  const breadcrumbItems = [
+    { name: 'Policies & Structure', url: '/hr/policies-structure' },
+    { name: 'Policies', url: '/hr/policies-structure/policies' },
+    { name: 'Create', url: '/hr/policies-structure/policies/create' },
+  ];
+
   return (
     <>
-      <PolicyRouteScreen basePath="/hr" mode="create" />
+      <BreadcrumbComponent data={breadcrumbItems} />
+      <PolicyFormRouter basePath="/hr" mode="create" />
     </>
   );
 }

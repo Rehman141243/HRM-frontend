@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { CreditCard, Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PolicyList } from "./policies/policy";
@@ -19,23 +20,22 @@ const TAB_META = {
   },
 };
 
-/**
- * PoliciesStructure
- * 
- * Integrated component for managing both policies and salary structures.
- * Replaces the previous policies-page.jsx with consolidated functionality.
- * 
- * Props:
- *   - basePath (string): dashboard base path (default: "/hr")
- */
-export default function PoliciesStructure({ basePath = "/hr" }) {
-  const [activeTab, setActiveTab] = useState("policies");
+export default function PoliciesStructure({ basePath = "/hr", onTabChange }) {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") === "structure" ? "structure" : "policies";
+
+  const [activeTab, setActiveTab] = useState(initialTab);
   const meta = TAB_META[activeTab];
   const Icon = meta.icon;
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (onTabChange) onTabChange(tab);
+  };
+
   return (
     <div className="p-6 space-y-6">
-      <Tabs defaultValue="policies" onValueChange={setActiveTab} className="w-full">
+      <Tabs defaultValue={initialTab} onValueChange={handleTabChange} className="w-full">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mt-5">
           <div>
             <div className="flex items-center gap-2">

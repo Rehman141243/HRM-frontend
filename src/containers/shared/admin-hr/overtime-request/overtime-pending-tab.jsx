@@ -71,7 +71,7 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
       } else if (r === "hr") {
         await axiosInstance.patch(`/attendance/overtime-requests/${id}/hr-action`, { action: "approve" });
       } else {
-        await axiosInstance.put(`/attendance/overtime-requests/${id}/approve`);
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/approve`);
       }
       setSuccess("Overtime request approved successfully!");
       onActionSuccess?.();
@@ -100,7 +100,7 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
           rejection_reason: reason || "",
         });
       } else {
-        await axiosInstance.put(`/attendance/overtime-requests/${id}/reject`, {
+        await axiosInstance.patch(`/attendance/overtime-requests/${id}/reject`, {
           reason: reason || "",
         });
       }
