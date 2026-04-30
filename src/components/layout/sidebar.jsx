@@ -73,7 +73,7 @@ export function AppSidebar() {
   const allNavItems = [
     { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, admin: true },
     { title: "Employee Management", href: "/admin/employee-management", icon: Users, admin: true },
-    { title: "Shift Management", href: "/admin/shift-management", icon: Calendar, hr: true },
+    { title: "Shift Management", href: "/admin/shift-management", icon: Calendar, admin: true },
     { title: "Leave Approval", href: "/admin/leave-approval", icon: ClipboardCheck, admin: true },
     { title: "Overtime Requests", href: "/admin/overtime-request", icon: Timer, admin: true },
     { title: "Policies & Structure", href: "/admin/policies-structure", icon: Gavel, admin: true },
