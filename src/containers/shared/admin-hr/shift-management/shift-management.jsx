@@ -63,16 +63,16 @@ export default function ShiftManagement() {
 
       <Tabs defaultValue="assignments" className="w-full">
         <TabsList className="grid w-full max-w-2xl grid-cols-2">
-          <TabsTrigger value="assignments">Assignments</TabsTrigger>
           <TabsTrigger value="shifts">Shifts</TabsTrigger>
+          <TabsTrigger value="assignments">Assignments</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assignments" className="mt-4">
-            <EmployeeAssignmentsTab showActions={role !== "admin"} />
+          <EmployeeAssignmentsTab showActions={role !== "admin"} />
         </TabsContent>
 
         <TabsContent value="shifts" className="mt-4">
-            <ShiftsManagementTab showActions={role !== "admin"} />
+          <ShiftsManagementTab showActions={role !== "admin"} />
         </TabsContent>
 
       </Tabs>
