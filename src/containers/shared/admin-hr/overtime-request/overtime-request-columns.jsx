@@ -93,7 +93,12 @@ export const getPendingOvertimeColumns = ({ role, actionId, onApprove, onRejectO
     header: "Actions",
     cell: ({ row }) => {
       const overtime = row.original;
-      const canApprove = overtime.status === "pending" && (role === "admin" || role === "hr" || role === "manager");
+      const isActioned = role === "manager"
+        ? overtime.manager_status !== "pending"
+        : role === "hr"
+          ? overtime.hr_status !== "pending"
+          : overtime.status !== "pending";
+      const canApprove = !isActioned && (role === "admin" || role === "hr" || role === "manager");
       return canApprove ? (
         <div className="flex items-center gap-2">
           <Button
@@ -122,7 +127,9 @@ export const getPendingOvertimeColumns = ({ role, actionId, onApprove, onRejectO
           </Button>
         </div>
       ) : (
-        <span className="text-xs text-muted-foreground">-</span>
+        <span className="text-xs text-muted-foreground">
+          {isActioned ? `${role === "manager" ? "Manager" : role === "hr" ? "HR" : ""} actioned` : "—"}
+        </span>
       );
     },
   },

@@ -43,7 +43,21 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
       try {
         const params = { page: pageNum, limit, status: "pending" };
         const res = await axiosInstance.get("/attendance/overtime-requests", { params });
-        setPending(res.data?.data ?? []);
+        const all = res.data?.data ?? [];
+        // Only show records that are still overall pending
+        // AND where the current role hasn't acted yet
+        const r = (role || "").toLowerCase();
+        const filtered = all.filter((item) => {
+          // Skip anything already fully resolved
+          if (item.status !== "pending") return false;
+          // For manager: only show if manager hasn't acted yet
+          if (r === "manager") return item.manager_status === "pending";
+          // For hr: only show if hr hasn't acted yet
+          if (r === "hr") return item.hr_status === "pending";
+          // Admin/other: show all overall-pending
+          return true;
+        });
+        setPending(filtered);
         setPagination(res.data?.pagination ?? {});
       } catch {
         setError("Unable to load pending overtime requests.");
@@ -53,7 +67,7 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
         setLoading(false);
       }
     },
-    []
+    [role]
   );
 
   useEffect(() => {
@@ -73,11 +87,20 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
       } else {
         await axiosInstance.patch(`/attendance/overtime-requests/${id}/approve`);
       }
+      // Optimistically remove from list immediately so it doesn't linger
+      setPending((prev) => prev.filter((item) => item.id !== id));
       setSuccess("Overtime request approved successfully!");
       onActionSuccess?.();
-      fetchPending(pageRef.current, pageSizeRef.current);
-    } catch {
-      setError("Failed to approve overtime request.");
+      // Refetch after a short delay to sync with backend
+      setTimeout(() => fetchPending(pageRef.current, pageSizeRef.current), 500);
+    } catch (err) {
+      const msg = err?.response?.data?.message || "";
+      if (msg.toLowerCase().includes("already taken action")) {
+        setError("This request has already been actioned. Refreshing list…");
+        fetchPending(pageRef.current, pageSizeRef.current);
+      } else {
+        setError("Failed to approve overtime request.");
+      }
     } finally {
       setActionId(null);
     }
@@ -104,13 +127,24 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
           reason: reason || "",
         });
       }
+      // Optimistically remove from list immediately
+      setPending((prev) => prev.filter((item) => item.id !== id));
       setSuccess("Overtime request rejected successfully!");
       setRejectDialogId(null);
       setRejectReason("");
       onActionSuccess?.();
-      fetchPending(pageRef.current, pageSizeRef.current);
-    } catch {
-      setError("Failed to reject overtime request.");
+      // Refetch after a short delay to sync with backend
+      setTimeout(() => fetchPending(pageRef.current, pageSizeRef.current), 500);
+    } catch (err) {
+      const msg = err?.response?.data?.message || "";
+      if (msg.toLowerCase().includes("already taken action")) {
+        setRejectDialogId(null);
+        setRejectReason("");
+        setError("This request has already been actioned. Refreshing list…");
+        fetchPending(pageRef.current, pageSizeRef.current);
+      } else {
+        setError("Failed to reject overtime request.");
+      }
     } finally {
       setActionId(null);
     }
@@ -132,7 +166,7 @@ export default function OvertimePendingTab({ role, refreshKey, onActionSuccess }
   };
 
   const retryFetch = () => fetchPending(pageRef.current, pageSizeRef.current);
-  const total = pagination.total ?? pending.length ?? 0;
+  const total = pending.length;
 
   return (
     <div className="space-y-4">
