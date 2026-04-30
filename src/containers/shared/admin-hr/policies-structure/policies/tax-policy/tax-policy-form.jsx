@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { CheckCircle2, Plus, RefreshCw, X } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
@@ -136,6 +136,12 @@ export default function TaxPolicyForm({
   onCancel,
 }) {
   const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  
+  // Resolve policyId from params if not provided as prop
+  const resolvedPolicyId = policyId || (Array.isArray(params?.id) ? params.id[0] : params?.id);
+  
   const meta = POLICY_META;
   const isEdit = mode === "edit";
 
@@ -149,10 +155,10 @@ export default function TaxPolicyForm({
       return;
     }
 
-    if (!policyId) return;
+    if (!resolvedPolicyId) return;
 
     setFetchLoading(true);
-    axiosInstance.get(`${API_PATH}/${policyId}`)
+    axiosInstance.get(`${API_PATH}/${resolvedPolicyId}`)
       .then((response) => {
         const policy = response.data.policy;
         setForm(buildInitialForm(policy));
@@ -160,10 +166,10 @@ export default function TaxPolicyForm({
       .catch((error) => {
         toast.error(extractErrorMessage(error, "Failed to load policy"));
         if (onCancel) onCancel();
-        else router.back();
+        else router.push(`${basePath}/policies-structure`);
       })
       .finally(() => setFetchLoading(false));
-  }, [isEdit, policyId]);
+  }, [isEdit, resolvedPolicyId]);
 
   const setF = (key) => (event) => {
     const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
@@ -179,7 +185,7 @@ export default function TaxPolicyForm({
     setSaving(true);
     try {
       if (isEdit) {
-        await axiosInstance.put(`${API_PATH}/${policyId}`, payload);
+        await axiosInstance.put(`${API_PATH}/${resolvedPolicyId}`, payload);
         toast.success("Policy updated successfully!");
       } else {
         await axiosInstance.post(API_PATH, payload);
@@ -187,7 +193,7 @@ export default function TaxPolicyForm({
       }
 
       if (onSuccess) onSuccess();
-      else router.push(`${basePath}/policies-structure/policies`);
+      else router.push(`${basePath}/policies-structure`);
     } catch (error) {
       toast.error(extractErrorMessage(error, `Failed to ${isEdit ? "update" : "create"} policy`));
     } finally {
@@ -197,7 +203,7 @@ export default function TaxPolicyForm({
 
   const handleCancel = () => {
     if (onCancel) onCancel();
-    else router.back();
+    else router.push(`${basePath}/policies-structure`);
   };
 
   const SaveBtn = ({ size = "default" }) => (
