@@ -149,15 +149,18 @@ export default function SalaryStructureForm({
         currency: form.currency?.trim() || "PKR",
         employee_id: selectedEmployee.id,
         attendance_policy_id: form.attendance_policy_id,
-        overtime_policy_id: form.overtime_policy_id,
-        tax_policy_id: form.tax_policy_id,
-        bonus_policy_id: form.bonus_policy_id || null,
-        basic_salary: parseFloat(form.basic_salary),
+        overtime_policy_id: form.overtime_policy_id || null,
+        tax_policy_id: form.tax_policy_id || null,
+        basic_salary: parseFloat(form.basic_salary) || null,
         allowances: normalizeComponents(allowances),
         deductions: normalizeComponents(deductions),
         effective_from: form.effective_from,
         is_active: true,
       };
+
+      if (form.bonus_policy_id?.trim()) {
+        payload.bonus_policy_id = form.bonus_policy_id.trim();
+      }
 
       setLoading(true);
       try {
