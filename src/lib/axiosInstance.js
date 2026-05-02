@@ -1,10 +1,8 @@
 import axios from "axios";
-
+import { config } from "@/config/config";
 // Use environment variable with fallback to localhost
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: config.apiUrl,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
