@@ -612,33 +612,7 @@ export function AddEmployeeForm({
   const availableRoles =
     currentUserRole === "hr" ? ["employee"] : ALLOWED_ROLES;
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setSaving(true);
-  //   setErr("");
-  //   try {
-  //     const fd = buildEmployeeFormData(form, files);
-  //     if (mode === "edit") {
-  //       await updateEmployee(employeeId, fd);
-  //     } else {
-  //       await createEmployee(fd);
-  //     }
-  //     onSuccess?.();
-  //   } catch (error) {
-  //     setErr(error.response?.data?.message ?? error.message);
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
 
-  // Existing file URLs from the API (adjust keys to match your API response)
-  // const existingFiles = {
-  //   profilePic: initialData?.profile_pic_url ?? initialData?.profile_pic ?? null,
-  //   cnic: initialData?.cnic_url ?? initialData?.cnic ?? null,
-  //   degree: initialData?.degree_url ?? initialData?.degree ?? null,
-  //   passport: initialData?.passport_url ?? initialData?.passport ?? null,
-  //   contract: initialData?.contract_url ?? initialData?.contract ?? null,
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

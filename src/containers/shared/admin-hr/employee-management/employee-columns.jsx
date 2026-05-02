@@ -76,11 +76,11 @@ export function buildColumns(onDelete, canDelete, onEdit, onView) {
         );
       },
     },
-    {
-      id: "is_active",
-      header: "Status",
-      cell: ({ row }) => <StatusBadge value={row.original.is_active} />,
-    },
+    // {
+    //   id: "is_active",
+    //   header: "Status",
+    //   cell: ({ row }) => <StatusBadge value={row.original.is_active} />,
+    // },
     {
       id: "actions",
       header: "Actions",

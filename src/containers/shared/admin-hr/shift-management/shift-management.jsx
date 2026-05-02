@@ -61,7 +61,7 @@ export default function ShiftManagement() {
         </div>
       </div>
 
-      <Tabs defaultValue="assignments" className="w-full">
+      <Tabs defaultValue="shifts" className="w-full">
         <TabsList className="grid w-full max-w-2xl grid-cols-2">
           <TabsTrigger value="shifts">Shifts</TabsTrigger>
           <TabsTrigger value="assignments">Assignments</TabsTrigger>
