@@ -1,8 +1,8 @@
 // config.js
 
-let environment = "dev";
+//let environment = "dev";
 // let environment = "staging";
-// let environment = "production";
+ let environment = "production";
 
 const config = {
   apiUrl:
