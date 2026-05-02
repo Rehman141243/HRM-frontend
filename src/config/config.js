@@ -4,7 +4,7 @@
 // let environment = "staging";
  let environment = "production";
 
-export const config = {
+ const config = {
   apiUrl:
     environment === "production"
       ? process.env.NEXT_PUBLIC_API_URL
