@@ -1,6 +1,6 @@
 import axios from "axios";
 import  config  from "../config/config";
-// Use environment variable with fallback to localhost
+
 const axiosInstance = axios.create({
   baseURL: config.apiUrl,
   timeout: 10000,
