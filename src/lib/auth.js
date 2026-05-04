@@ -15,8 +15,6 @@ export function setToken(token) {
   try {
     if (typeof window === "undefined") return;
     localStorage.setItem("token", token);
-    // Also set as cookie for middleware
-    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
   } catch {
     console.error("Failed to set token");
   }
@@ -27,8 +25,6 @@ export function removeToken() {
     if (typeof window === "undefined") return;
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // Remove cookie
-    document.cookie = "token=; path=/; max-age=0";
   } catch {
     console.error("Failed to remove token");
   }
